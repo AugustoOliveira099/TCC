@@ -16,7 +16,7 @@ def get_news() -> list:
     try:
         # Array que armazeraná as notícias
         news = []
-        # Captura as últimas 100 notícias cadastradas
+        # Captura as 100 últimas notícias cadastradas
         response = requests.get(f'{NEWS_ENDPOINT}&per_page=100&page=1')
         number_pages = int(response.headers['X-WP-TotalPages'])
         number_news = int(response.headers['X-WP-Total'])
