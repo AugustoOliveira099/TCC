@@ -16,12 +16,15 @@ def get_news() -> list:
     try:
         # Array que armazeraná as notícias
         news = []
+
+        logging.info(f'Request the first 100 news')
+
         # Captura as 100 últimas notícias cadastradas
         response = requests.get(f'{NEWS_ENDPOINT}&per_page=100&page=1')
         number_pages = int(response.headers['X-WP-TotalPages'])
         number_news = int(response.headers['X-WP-Total'])
 
-        logging.info(f'There are {number_news} news.')
+        logging.info(f'There are {number_news} news in total.')
 
         # Armazena o conteúdo das notícias
         response_content = json.loads(response.content)
@@ -29,10 +32,10 @@ def get_news() -> list:
         for content in response_content:
             title = content['title']['rendered']
             text = content['acf']['corpo']
-            news.append({ 'title': title, 'text': text, 'target': ''})
+            news.append({ 'title': title, 'content': text, 'target': ''})
 
         # Captura e armazena o conteúdo das demais notícias
-        logging.info('Starting news request.')
+        logging.info('Request the rest of the news.')
         initial_time = time.time()
 
         for i in range(2, number_pages + 1):
@@ -44,7 +47,7 @@ def get_news() -> list:
             for content in response_content:
                 title = content['title']['rendered']
                 text = content['acf']['corpo']
-                news.append({ 'title': title, 'text': text, 'target': ''})
+                news.append({ 'title': title, 'content': text, 'target': ''})
 
         final_time = time.time()
         total_time = final_time - initial_time
@@ -66,10 +69,7 @@ def get_news() -> list:
         logging.error('Error when requesting news: %s', str(e))
         raise
 
-def create_csv_file(data: list) -> None:
-    # Nome do arquivo CSV de saída
-    file_name = 'raw_news.csv'
-
+def create_csv_file(data: list, file_name: str) -> None:
     # Lista das chaves do dicionário (cabeçalho do CSV)
     header = data[0].keys()
 
@@ -93,4 +93,4 @@ if __name__ == '__main__':
     data = get_news()
 
     # Salva as notícias em um arquivo CSV
-    create_csv_file(data)
+    create_csv_file(data, 'data/raw_news.csv')

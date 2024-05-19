@@ -1,6 +1,6 @@
 import pandas as pd
 
-df = pd.read_csv('first_news.csv')
+df = pd.read_csv('data/first_news.csv')
 header = df.iloc[0]
 news_df = df.iloc[1:]
 
