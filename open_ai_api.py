@@ -4,6 +4,17 @@ import logging
 from bs4 import BeautifulSoup
 import matplotlib.pyplot as plt
 import openai
+from openai import OpenAI
+# from utils.embeddings_utils import get_embedding
+from dotenv import load_dotenv
+import os
+
+# Carregar variáveis de ambiente do arquivo .env
+load_dotenv()
+
+# create OpenAi client
+key = os.getenv('OPENAI_API_KEY')
+client = OpenAI(api_key=key)
 
 # Configuração inicial do logging
 # Com level logging.INFO, também é englobado o level logging.ERROR
@@ -26,7 +37,11 @@ df_merged['combined'] = 'Título: ' + df_merged['title'].str.strip() + '; Conte�
 # Função para remover HTML de uma string
 def remove_html(text):
     soup = BeautifulSoup(text, "html.parser")
-    return soup.get_text()
+    # Remover todas as tags 'figcaption' e seu conteúdo
+    for figcaption in soup.find_all('figcaption'):
+        figcaption.decompose()
+    # Remover linhas em branco e retornar o texto sem HTML
+    return '\n'.join([line for line in soup.get_text().split('\n') if line.strip()])
 
 # Remove HTML do texto
 logging.info('Remove HTML from content')
@@ -34,7 +49,7 @@ df_merged['combined'] = df_merged['combined'].apply(lambda x: remove_html(x))
 
 # Salva dataframe como arquivo csv
 logging.info('Save dataframe as csv file')
-df_merged.to_csv('data/merged_news.csv', index=False)
+df_merged.to_csv('data/merged_news_combined.csv', index=False)
 
 # embedding model parameters
 embedding_model = "text-embedding-3-large"
@@ -45,6 +60,11 @@ max_tokens = 8191  # the maximum input for text-embedding-3-large is 8191
 logging.info('Calculate the number of tokens for each cell in column "combined"')
 encoding = tiktoken.get_encoding(embedding_encoding)
 df_merged["n_tokens"] = df_merged.combined.apply(lambda x: len(encoding.encode(x)))
+
+# Remove news that are too long to embed
+sum_news_too_long = (df_merged['n_tokens'] > max_tokens).sum()
+logging.info(f'Remove {sum_news_too_long} news that are too long to embed')
+df_merged = df_merged[df_merged['n_tokens'] <= max_tokens]
 
 logging.info('Plot the token frequency')
 # Set the style of the plot
@@ -81,3 +101,14 @@ plt.close()
 
 # Calculate the price of the OpenAI embedding
 print(f"Estimated priced is U$ {(df_merged.n_tokens.sum()/1000*0.00013)}.")
+
+# Função que requisita os dados à API da OpenAi
+def get_embedding(text: str, model="text-embedding-3-large"):
+   text = text.replace("\n", " ")
+   return client.embeddings.create(input = [text], model=model).data[0].embedding
+
+# Take this cell will cost U$ 1,00 to run
+# Ensure you have your API key set in your environment per the README: https://github.com/openai/openai-python#usage
+# This may take a lot of minutes (25min)
+logging.info('Embed combined news')
+# df_merged["embedding"] = df_merged['combined'].apply(lambda x: get_embedding(x, embedding_model))

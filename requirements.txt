@@ -7,3 +7,5 @@ matplotlib
 openai
 dvc
 dvc-gdrive
+bs4
+python-dotenv
