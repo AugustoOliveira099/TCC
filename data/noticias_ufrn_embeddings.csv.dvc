@@ -1,0 +1,5 @@
+outs:
+- md5: a2bd1190da7d35b70a0f7d245a7c6624
+  size: 1599270857
+  hash: md5
+  path: noticias_ufrn_embeddings.csv
