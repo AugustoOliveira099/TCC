@@ -11,3 +11,4 @@ bs4
 python-dotenv
 numpy
 scikit-learn
+xgboost

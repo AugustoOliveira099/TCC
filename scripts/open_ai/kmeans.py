@@ -49,7 +49,7 @@ logging.info(f'The total time to KMeans without t-SNE was {total_time} seconds.'
 # Apply t-SNE to reduce dimensionality
 logging.info('Apply t-SNE')
 initial_time = time.time()
-tsne_new = TSNE(n_components=2, perplexity=50, random_state=42, learning_rate=200)
+tsne_new = TSNE(n_components=2, perplexity=50, random_state=42, learning_rate=500)
 matrix_tsne = tsne_new.fit_transform(matrix_scaled)
 final_time = time.time()
 total_time = final_time - initial_time
