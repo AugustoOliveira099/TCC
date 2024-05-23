@@ -1,0 +1,93 @@
+INFO - Read data
+INFO - Create embedding matrix (this may take about 10 minutes)
+INFO - The total time to create embedding matrix was 235.87219142913818 seconds.
+INFO - Normalize matrix
+INFO - The total time to normalize matrix was 0.7679250240325928 seconds.
+INFO - Init KMeans without t-SNE
+INFO - The total time to KMeans without t-SNE was 20.295302629470825 seconds.
+INFO - Apply t-SNE
+INFO - The total time to apply t-SNE was 215.29987740516663 seconds.
+INFO - Init KMeans with t-SNE
+INFO - The total time for KMeans with t-SNE was 0.10190558433532715 seconds.
+INFO - Save data with clusters
+INFO - Train the XGBoost model with tsne data
+INFO - The total time for train the model was 0.2716250419616699 seconds.
+INFO - Accuracy tsne train: 0.9993685781528041
+INFO - Classification Report tsne train:
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00      4679
+           1       1.00      1.00      1.00      4604
+           2       1.00      1.00      1.00      3947
+           3       1.00      1.00      1.00      4191
+
+    accuracy                           1.00     17421
+   macro avg       1.00      1.00      1.00     17421
+weighted avg       1.00      1.00      1.00     17421
+
+INFO - Accuracy tsne dev: 0.9972451790633609
+INFO - Classification Report tsne dev:
+              precision    recall  f1-score   support
+
+           0       1.00      0.99      0.99       560
+           1       0.99      1.00      1.00       589
+           2       1.00      1.00      1.00       478
+           3       1.00      1.00      1.00       551
+
+    accuracy                           1.00      2178
+   macro avg       1.00      1.00      1.00      2178
+weighted avg       1.00      1.00      1.00      2178
+
+INFO - Accuracy tsne test: 0.9986225895316805
+INFO - Classification Report tsne test:
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00       590
+           1       1.00      1.00      1.00       527
+           2       1.00      1.00      1.00       480
+           3       1.00      1.00      1.00       581
+
+    accuracy                           1.00      2178
+   macro avg       1.00      1.00      1.00      2178
+weighted avg       1.00      1.00      1.00      2178
+
+INFO - Train the XGBoost model without tsne data
+INFO - The total time for train the model was 225.87997794151306 seconds.
+INFO - Accuracy train: 1.0
+INFO - Classification Report train:
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00      4292
+           1       1.00      1.00      1.00      6106
+           2       1.00      1.00      1.00      3331
+           3       1.00      1.00      1.00      3692
+
+    accuracy                           1.00     17421
+   macro avg       1.00      1.00      1.00     17421
+weighted avg       1.00      1.00      1.00     17421
+
+INFO - Accuracy dev: 0.9563820018365473
+INFO - Classification Report dev:
+              precision    recall  f1-score   support
+
+           0       0.97      0.98      0.97       570
+           1       0.96      0.97      0.97       741
+           2       0.95      0.92      0.93       427
+           3       0.94      0.95      0.94       440
+
+    accuracy                           0.96      2178
+   macro avg       0.95      0.95      0.95      2178
+weighted avg       0.96      0.96      0.96      2178
+
+INFO - Accuracy test: 0.9471992653810836
+INFO - Classification Report test:
+              precision    recall  f1-score   support
+
+           0       0.98      0.96      0.97       552
+           1       0.93      0.97      0.95       751
+           2       0.95      0.92      0.94       407
+           3       0.93      0.92      0.93       468
+
+    accuracy                           0.95      2178
+   macro avg       0.95      0.94      0.95      2178
+weighted avg       0.95      0.95      0.95      2178

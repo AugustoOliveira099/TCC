@@ -1,0 +1,5 @@
+outs:
+- md5: 8860fe9aa3a6968d09e4fc550dbd3ae7
+  size: 1500131174
+  hash: md5
+  path: noticias_ufrn_clusters.csv

@@ -32,10 +32,6 @@ df_combined = combine_columns(df_merged, 'title', 'content', 'combined')
 # Remove HTML do texto
 df_combined = remove_html_from_df(df_combined, 'combined')
 
-# # Export the output into a .csv file
-# logging.info('Save dataframe as csv file')
-# df_combined.to_csv('data/merged_news_combined.csv', index=False)
-
 logging.info('Calculate the number of tokens for each cell in "combined" column')
 df_tokens = calc_number_tokens(df_combined, 'combined', 'n_tokens', embedding_encoding)
 
