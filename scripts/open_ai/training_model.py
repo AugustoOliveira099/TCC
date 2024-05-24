@@ -95,62 +95,75 @@ X_train, X_test, y_train, y_test = train_test_split(matrix_scaled, labels, test_
 # Dividir os dados de treinamento em treinamento e dev, totalizando 90/5/5
 X_test, X_dev, y_test, y_dev = train_test_split(X_test, y_test, test_size=0.5, random_state=42)
 
-# Estancia modelos e define hiperparâmetros
-logging.info('Create model')
-model = XGBClassifier(eval_metric='mlogloss', random_state=42)
+# # Estancia modelos e define hiperparâmetros
+# logging.info('Create model')
 
 param_grid = {
-    'learning_rate': [0.2, 0.1],
-    'max_depth': [3, 5],
-    # 'reg_alpha': [1.0, 0.5],
-    # 'reg_lambda': [2, 0.5],
-    # 'subsample': [0.5, 0.7, 1.0],
-    # 'colsample_bytree': [0.8, 0.9, 1.0]
+    'learning_rate': [0.3, 0.2, 0.3],
+    'max_depth': [7, 6, 6],
+    'reg_alpha': [15, 15, 10],
+    'reg_lambda': [15, 15, 10],
+    'subsample': [0.5, 0.5, 0.5],
+    'colsample_bytree': [0.7, 0.7, 0.5],
 }
 
-# Configurar o GridSearchCV
-grid_search = GridSearchCV(estimator=model, param_grid=param_grid, scoring='accuracy', cv=3, verbose=2)
+# # Configurar o GridSearchCV
+# grid_search = GridSearchCV(estimator=model, param_grid=param_grid, scoring='accuracy', cv=3, verbose=2)
 
-# model fit
-logging.info('Train the XGBoost model without tsne data')
-initial_time = time.time()
-grid_search.fit(X_train, y_train)
-final_time = time.time()
-total_time = final_time - initial_time
-logging.info(f'The total time for train the model was {total_time} seconds.')
+for i in range(3):
+    # model fit
+    logging.info('Train the XGBoost model without tsne data')
+    logging.info(f'Parameters: { {'learning_rate': param_grid['learning_rate'][i], 
+                                  'max_depth': param_grid['max_depth'][i], 
+                                  'reg_alpha': param_grid['reg_alpha'][i],
+                                  'reg_lambda': param_grid['reg_lambda'][i], 
+                                  'subsample': param_grid['subsample'][i],
+                                  'colsample_bytree': param_grid['colsample_bytree'][i],
+                                  } }')
+    initial_time = time.time()
+    model = XGBClassifier(learning_rate=param_grid['learning_rate'][i],
+                        max_depth=param_grid['max_depth'][i],
+                        reg_alpha=param_grid['reg_alpha'][i],
+                        reg_lambda=param_grid['reg_lambda'][i],
+                        subsample=param_grid['subsample'][i],
+                        colsample_bytree=param_grid['colsample_bytree'][i],
+                        eval_metric='mlogloss',
+                        random_state=42)
+    model.fit(X_train, y_train)
+    final_time = time.time()
+    total_time = final_time - initial_time
+    logging.info(f'The total time for train the model was {total_time} seconds.')
 
-# Obter os melhores parâmetros
-best_params = grid_search.best_params_
-best_model = grid_search.best_estimator_
+    # # Obter os melhores parâmetros
+    # best_params = grid_search.best_params_
+    # best_model = grid_search.best_estimator_
 
-# Fazer previsões no conjunto de treinamento
-y_pred_train = best_model.predict(X_train)
+    # Fazer previsões no conjunto de treinamento
+    y_pred_train = model.predict(X_train)
 
-# Avaliar a performance do modelo
-accuracy = accuracy_score(y_train, y_pred_train)
-report = classification_report(y_train, y_pred_train)
+    # Avaliar a performance do modelo
+    accuracy = accuracy_score(y_train, y_pred_train)
+    report = classification_report(y_train, y_pred_train)
 
-logging.info(f'Accuracy train: {accuracy}')
-logging.info(f'Classification Report train:\n{report}')
+    logging.info(f'Accuracy train: {accuracy}')
+    logging.info(f'Classification Report train:\n{report}')
 
-# Fazer previsões no conjunto de dev
-y_pred_dev = best_model.predict(X_dev)
+    # Fazer previsões no conjunto de dev
+    y_pred_dev = model.predict(X_dev)
 
-# Avaliar a performance do modelo
-accuracy = accuracy_score(y_dev, y_pred_dev)
-report = classification_report(y_dev, y_pred_dev)
+    # Avaliar a performance do modelo
+    accuracy = accuracy_score(y_dev, y_pred_dev)
+    report = classification_report(y_dev, y_pred_dev)
 
-logging.info(f'Accuracy dev: {accuracy}')
-logging.info(f'Classification Report dev:\n{report}')
+    logging.info(f'Accuracy dev: {accuracy}')
+    logging.info(f'Classification Report dev:\n{report}')
 
-# Fazer previsões no conjunto de teste
-y_pred_test = best_model.predict(X_test)
+    # Fazer previsões no conjunto de teste
+    y_pred_test = model.predict(X_test)
 
-# Avaliar a performance do modelo
-accuracy = accuracy_score(y_test, y_pred_test)
-report = classification_report(y_test, y_pred_test)
+    # Avaliar a performance do modelo
+    accuracy = accuracy_score(y_test, y_pred_test)
+    report = classification_report(y_test, y_pred_test)
 
-logging.info(f'Accuracy test: {accuracy}')
-logging.info(f'Classification Report test:\n{report}')
-
-logging.info(f'Best Parameters: {best_params}')
+    logging.info(f'Accuracy test: {accuracy}')
+    logging.info(f'Classification Report test:\n{report}')
