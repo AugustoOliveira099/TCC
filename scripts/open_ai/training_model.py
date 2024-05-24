@@ -16,12 +16,12 @@ logging.info('Read data')
 datafile_path = '../../data/noticias_ufrn_clusters.csv'
 df = pd.read_csv(datafile_path)
 
-# Captura a matriz de valores com redução de dimensionalidade
+# Lê a matriz de valores com redução de dimensionalidade
 matrix_tsne = df[['tsne1', 'tsne2']].values
 
 print(type(matrix_tsne))
 
-# Selecionar os rótulos gerados pelo KMeans com t-SNE
+# Lê os rótulos gerados pelo KMeans com t-SNE
 cluster_column = 'cluster_with_tsne'
 labels = df[cluster_column]
 
@@ -70,9 +70,13 @@ logging.info(f'Classification Report tsne test:\n{report}')
 
 
 # Create embedding matrix
-logging.info('')
+logging.info('Create embedding matrix')
+initial_time = time.time()
 embedding = df.embedding.apply(literal_eval).apply(np.array)  # convert string to numpy array
 matrix = np.vstack(embedding.values)
+final_time = time.time()
+total_time = final_time - initial_time
+logging.info(f'The total time for create embedding matrix was {total_time} seconds.')
 
 # Normalize matrix
 logging.info('Normalize matrix')
@@ -92,19 +96,20 @@ X_train, X_test, y_train, y_test = train_test_split(matrix_scaled, labels, test_
 X_test, X_dev, y_test, y_dev = train_test_split(X_test, y_test, test_size=0.5, random_state=42)
 
 # Estancia modelos e define hiperparâmetros
+logging.info('Create model')
 model = XGBClassifier(eval_metric='mlogloss', random_state=42)
 
 param_grid = {
     'learning_rate': [0.2, 0.1],
     'max_depth': [3, 5],
-    'reg_alpha': [1.0, 0.5],
-    'reg_lambda': [2, 0.5],
+    # 'reg_alpha': [1.0, 0.5],
+    # 'reg_lambda': [2, 0.5],
     # 'subsample': [0.5, 0.7, 1.0],
     # 'colsample_bytree': [0.8, 0.9, 1.0]
 }
 
 # Configurar o GridSearchCV
-grid_search = GridSearchCV(estimator=model, param_grid=param_grid, scoring='accuracy', cv=3, n_jobs=-2, verbose=2)
+grid_search = GridSearchCV(estimator=model, param_grid=param_grid, scoring='accuracy', cv=3, verbose=2)
 
 # model fit
 logging.info('Train the XGBoost model without tsne data')
