@@ -4,6 +4,7 @@ Script com funções que serão utilizadas
 
 # Importa bibliotecas
 import pandas as pd
+import numpy as np
 import logging
 import matplotlib.pyplot as plt
 from bs4 import BeautifulSoup
@@ -11,6 +12,8 @@ import tiktoken
 from openai import OpenAI
 from dotenv import load_dotenv
 import os
+from sklearn.metrics import classification_report, accuracy_score
+from xgboost import XGBClassifier
 
 # Carregar variáveis de ambiente do arquivo .env
 load_dotenv()
@@ -111,3 +114,15 @@ def remove_long_news(df: pd.DataFrame, column_tokens: str, max_tokens: int) -> p
 def get_embedding(text: str, model="text-embedding-3-large") -> list[float]:
    text = text.replace("\n", " ")
    return client.embeddings.create(input = [text], model=model).data[0].embedding
+
+# Evaluate model
+def evaluate_model(model: XGBClassifier, X_data: np.ndarray, y_data: pd.Series, set_name: str = "") -> None:
+    # Fazer previsões no conjunto
+    y_pred = model.predict(X_data)
+
+    # Avaliar a performance do modelo
+    accuracy = accuracy_score(y_data, y_pred)
+    report = classification_report(y_data, y_pred)
+
+    logging.info(f'Accuracy {set_name}: {accuracy}')
+    logging.info(f'Classification Report {set_name}:\n{report}')

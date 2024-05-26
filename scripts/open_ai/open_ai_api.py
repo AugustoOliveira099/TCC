@@ -1,11 +1,16 @@
 import logging
 import pandas as pd
+import sys
+import os
+
+relative_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../scripts'))
+sys.path.append(relative_path)
+
 from utils import plot_frequency_of_tokens, \
                   remove_html_from_df, \
                   combine_columns, \
                   calc_number_tokens, \
-                  remove_long_news, \
-                  get_embedding
+                  remove_long_news
 
 # Configuração inicial do logging
 # Com level logging.INFO, também é englobado o level logging.ERROR

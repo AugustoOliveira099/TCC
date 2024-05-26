@@ -2,11 +2,17 @@ import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from xgboost import XGBClassifier
 from sklearn.model_selection import train_test_split, GridSearchCV
-from sklearn.metrics import classification_report, accuracy_score
 import logging
 import numpy as np
 import time
 from ast import literal_eval
+import sys
+import os
+
+relative_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../scripts'))
+sys.path.append(relative_path)
+
+from utils import evaluate_model
 
 # Configuração inicial do logging
 # Com level logging.INFO, também é englobado o level logging.ERROR
@@ -18,8 +24,6 @@ df = pd.read_csv(datafile_path)
 
 # Lê a matriz de valores com redução de dimensionalidade
 matrix_tsne = df[['tsne1', 'tsne2']].values
-
-print(type(matrix_tsne))
 
 # Lê os rótulos gerados pelo KMeans com t-SNE
 cluster_column = 'cluster_with_tsne'
@@ -40,34 +44,14 @@ model.fit(X_train_tsne, y_train_tsne)
 # Fazer previsões no conjunto de treinamento
 y_pred_train = model.predict(X_train_tsne)
 
-# Avaliar a performance do modelo
-accuracy = accuracy_score(y_train_tsne, y_pred_train)
-report = classification_report(y_train_tsne, y_pred_train)
+# Evaluate train model
+evaluate_model(model, X_train_tsne, y_train_tsne, "tsne train")
 
-logging.info(f'Accuracy tsne train: {accuracy}')
-logging.info(f'Classification Report tsne train:\n{report}')
+# Evaluate dev model
+evaluate_model(model, X_dev_tsne, y_dev_tsne, "tsne dev")
 
-# Fazer previsões no conjunto de dev
-y_pred_dev = model.predict(X_dev_tsne)
-
-# Avaliar a performance do modelo
-accuracy = accuracy_score(y_dev_tsne, y_pred_dev)
-report = classification_report(y_dev_tsne, y_pred_dev)
-
-logging.info(f'Accuracy tsne dev: {accuracy}')
-logging.info(f'Classification Report tsne dev:\n{report}')
-
-# Fazer previsões no conjunto de teste
-y_pred_test = model.predict(X_test_tsne)
-
-# Avaliar a performance do modelo
-accuracy = accuracy_score(y_test_tsne, y_pred_test)
-report = classification_report(y_test_tsne, y_pred_test)
-
-logging.info(f'Accuracy tsne test: {accuracy}')
-logging.info(f'Classification Report tsne test:\n{report}')
-
-
+# Evaluate test model
+evaluate_model(model, X_test_tsne, y_test_tsne, "tsne test")
 
 # Create embedding matrix
 logging.info('Create embedding matrix')
@@ -111,16 +95,16 @@ param_grid = {
 # grid_search = GridSearchCV(estimator=model, param_grid=param_grid, scoring='accuracy', cv=3, verbose=2)
 
 for i in range(3):
-    # model fit
     logging.info('Train the XGBoost model without tsne data')
-    logging.info(f'Parameters: { {'learning_rate': param_grid['learning_rate'][i], 
-                                  'max_depth': param_grid['max_depth'][i], 
+    logging.info(f'Parameters: { {'learning_rate': param_grid['learning_rate'][i],
+                                  'max_depth': param_grid['max_depth'][i],
                                   'reg_alpha': param_grid['reg_alpha'][i],
-                                  'reg_lambda': param_grid['reg_lambda'][i], 
+                                  'reg_lambda': param_grid['reg_lambda'][i],
                                   'subsample': param_grid['subsample'][i],
                                   'colsample_bytree': param_grid['colsample_bytree'][i],
                                   } }')
     initial_time = time.time()
+    # Criar e treinar o modelo XGBoost
     model = XGBClassifier(learning_rate=param_grid['learning_rate'][i],
                         max_depth=param_grid['max_depth'][i],
                         reg_alpha=param_grid['reg_alpha'][i],
@@ -138,32 +122,11 @@ for i in range(3):
     # best_params = grid_search.best_params_
     # best_model = grid_search.best_estimator_
 
-    # Fazer previsões no conjunto de treinamento
-    y_pred_train = model.predict(X_train)
+    # Evaluate train model
+    evaluate_model(model, X_train, y_train, "train")
 
-    # Avaliar a performance do modelo
-    accuracy = accuracy_score(y_train, y_pred_train)
-    report = classification_report(y_train, y_pred_train)
+    # Evaluate dev model
+    evaluate_model(model, X_dev, y_dev, "dev")
 
-    logging.info(f'Accuracy train: {accuracy}')
-    logging.info(f'Classification Report train:\n{report}')
-
-    # Fazer previsões no conjunto de dev
-    y_pred_dev = model.predict(X_dev)
-
-    # Avaliar a performance do modelo
-    accuracy = accuracy_score(y_dev, y_pred_dev)
-    report = classification_report(y_dev, y_pred_dev)
-
-    logging.info(f'Accuracy dev: {accuracy}')
-    logging.info(f'Classification Report dev:\n{report}')
-
-    # Fazer previsões no conjunto de teste
-    y_pred_test = model.predict(X_test)
-
-    # Avaliar a performance do modelo
-    accuracy = accuracy_score(y_test, y_pred_test)
-    report = classification_report(y_test, y_pred_test)
-
-    logging.info(f'Accuracy test: {accuracy}')
-    logging.info(f'Classification Report test:\n{report}')
+    # Evaluate test model
+    evaluate_model(model, X_test, y_test, "test")

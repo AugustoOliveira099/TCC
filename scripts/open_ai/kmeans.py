@@ -7,9 +7,6 @@ from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 from sklearn.manifold import TSNE
 import time
-from sklearn.model_selection import train_test_split, GridSearchCV
-from xgboost import XGBClassifier
-from sklearn.metrics import classification_report, accuracy_score
 
 # Configuração inicial do logging
 # Com level logging.INFO, também é englobado o level logging.ERROR

@@ -1,0 +1,171 @@
+INFO - Read data
+INFO - Data split
+INFO - Train the XGBoost model with tsne data
+INFO - Accuracy tsne train: 0.9993685781528041
+INFO - Classification Report tsne train:
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00      4679
+           1       1.00      1.00      1.00      4604
+           2       1.00      1.00      1.00      3947
+           3       1.00      1.00      1.00      4191
+
+    accuracy                           1.00     17421
+   macro avg       1.00      1.00      1.00     17421
+weighted avg       1.00      1.00      1.00     17421
+
+INFO - Accuracy tsne dev: 0.9972451790633609
+INFO - Classification Report tsne dev:
+              precision    recall  f1-score   support
+
+           0       1.00      0.99      0.99       560
+           1       0.99      1.00      1.00       589
+           2       1.00      1.00      1.00       478
+           3       1.00      1.00      1.00       551
+
+    accuracy                           1.00      2178
+   macro avg       1.00      1.00      1.00      2178
+weighted avg       1.00      1.00      1.00      2178
+
+INFO - Accuracy tsne test: 0.9986225895316805
+INFO - Classification Report tsne test:
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00       590
+           1       1.00      1.00      1.00       527
+           2       1.00      1.00      1.00       480
+           3       1.00      1.00      1.00       581
+
+    accuracy                           1.00      2178
+   macro avg       1.00      1.00      1.00      2178
+weighted avg       1.00      1.00      1.00      2178
+
+INFO - Create embedding matrix
+INFO - The total time for create embedding matrix was 234.05140733718872 seconds.
+INFO - Normalize matrix
+INFO - Data split
+INFO - Train the XGBoost model without tsne data
+INFO - Parameters: {'learning_rate': 0.3, 'max_depth': 7, 'reg_alpha': 15, 'reg_lambda': 15, 'subsample': 0.5, 'colsample_bytree': 0.7}
+INFO - The total time for train the model was 187.79267406463623 seconds.
+INFO - Accuracy train: 0.999591815908975
+INFO - Classification Report train:
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00      4827
+           1       1.00      1.00      1.00      6843
+           2       1.00      1.00      1.00      3751
+           3       1.00      1.00      1.00      4178
+
+    accuracy                           1.00     19599
+   macro avg       1.00      1.00      1.00     19599
+weighted avg       1.00      1.00      1.00     19599
+
+INFO - Accuracy dev: 0.967860422405877
+INFO - Classification Report dev:
+              precision    recall  f1-score   support
+
+           0       0.98      0.99      0.98       289
+           1       0.97      0.98      0.98       376
+           2       0.97      0.93      0.95       216
+           3       0.94      0.96      0.95       208
+
+    accuracy                           0.97      1089
+   macro avg       0.97      0.96      0.96      1089
+weighted avg       0.97      0.97      0.97      1089
+
+INFO - Accuracy test: 0.9522497704315886
+INFO - Classification Report test:
+              precision    recall  f1-score   support
+
+           0       0.96      0.97      0.96       298
+           1       0.95      0.97      0.96       379
+           2       0.97      0.89      0.93       198
+           3       0.93      0.95      0.94       214
+
+    accuracy                           0.95      1089
+   macro avg       0.95      0.95      0.95      1089
+weighted avg       0.95      0.95      0.95      1089
+
+INFO - Train the XGBoost model without tsne data
+INFO - Parameters: {'learning_rate': 0.2, 'max_depth': 6, 'reg_alpha': 15, 'reg_lambda': 15, 'subsample': 0.5, 'colsample_bytree': 0.7}
+INFO - The total time for train the model was 213.76162552833557 seconds.
+INFO - Accuracy train: 0.9983162406245216
+INFO - Classification Report train:
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00      4827
+           1       1.00      1.00      1.00      6843
+           2       1.00      1.00      1.00      3751
+           3       1.00      1.00      1.00      4178
+
+    accuracy                           1.00     19599
+   macro avg       1.00      1.00      1.00     19599
+weighted avg       1.00      1.00      1.00     19599
+
+INFO - Accuracy dev: 0.9623507805325987
+INFO - Classification Report dev:
+              precision    recall  f1-score   support
+
+           0       0.98      0.99      0.98       289
+           1       0.97      0.98      0.97       376
+           2       0.96      0.92      0.94       216
+           3       0.94      0.95      0.95       208
+
+    accuracy                           0.96      1089
+   macro avg       0.96      0.96      0.96      1089
+weighted avg       0.96      0.96      0.96      1089
+
+INFO - Accuracy test: 0.9577594123048668
+INFO - Classification Report test:
+              precision    recall  f1-score   support
+
+           0       0.99      0.97      0.98       298
+           1       0.94      0.98      0.96       379
+           2       0.96      0.90      0.93       198
+           3       0.94      0.95      0.95       214
+
+    accuracy                           0.96      1089
+   macro avg       0.96      0.95      0.95      1089
+weighted avg       0.96      0.96      0.96      1089
+
+INFO - Train the XGBoost model without tsne data
+INFO - Parameters: {'learning_rate': 0.3, 'max_depth': 6, 'reg_alpha': 10, 'reg_lambda': 10, 'subsample': 0.5, 'colsample_bytree': 0.5}
+INFO - The total time for train the model was 207.74048113822937 seconds.
+INFO - Accuracy train: 0.9999489769886218
+INFO - Classification Report train:
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00      4827
+           1       1.00      1.00      1.00      6843
+           2       1.00      1.00      1.00      3751
+           3       1.00      1.00      1.00      4178
+
+    accuracy                           1.00     19599
+   macro avg       1.00      1.00      1.00     19599
+weighted avg       1.00      1.00      1.00     19599
+
+INFO - Accuracy dev: 0.9632690541781451
+INFO - Classification Report dev:
+              precision    recall  f1-score   support
+
+           0       0.98      0.98      0.98       289
+           1       0.97      0.97      0.97       376
+           2       0.97      0.92      0.94       216
+           3       0.94      0.98      0.96       208
+
+    accuracy                           0.96      1089
+   macro avg       0.96      0.96      0.96      1089
+weighted avg       0.96      0.96      0.96      1089
+
+INFO - Accuracy test: 0.9504132231404959
+INFO - Classification Report test:
+              precision    recall  f1-score   support
+
+           0       0.98      0.97      0.97       298
+           1       0.94      0.97      0.95       379
+           2       0.97      0.89      0.93       198
+           3       0.92      0.94      0.93       214
+
+    accuracy                           0.95      1089
+   macro avg       0.95      0.94      0.95      1089
+weighted avg       0.95      0.95      0.95      1089

@@ -12,3 +12,5 @@ python-dotenv
 numpy
 scikit-learn
 xgboost
+nltk
+spacy
