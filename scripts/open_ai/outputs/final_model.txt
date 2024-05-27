@@ -1,0 +1,92 @@
+INFO - Read data
+INFO - Código 0: Ciências
+INFO - Código 1: Eventos
+INFO - Código 2: Informes
+INFO - Código 3: Vagas
+INFO - Data preprocessing
+INFO - Convert list of tokens to string
+INFO - Vectorize data
+INFO - Train model
+INFO - Train the XGBoost model
+INFO - Parameters: {'learning_rate': 0.3, 'max_depth': 7, 'reg_alpha': 15, 'reg_lambda': 15, 'subsample': 0.5, 'colsample_bytree': 0.7}
+INFO - Accuracy train model: 1.00000
+INFO - Classification Report train model:
+              precision    recall  f1-score   support
+
+    Ciências       1.00      1.00      1.00      1102
+     Eventos       1.00      1.00      1.00      3939
+    Informes       1.00      1.00      1.00      5301
+       Vagas       1.00      1.00      1.00      4000
+
+    accuracy                           1.00     14342
+   macro avg       1.00      1.00      1.00     14342
+weighted avg       1.00      1.00      1.00     14342
+
+INFO - Accuracy test model: 0.96207
+INFO - Classification Report test model:
+              precision    recall  f1-score   support
+
+    Ciências       0.94      0.85      0.89       298
+     Eventos       0.94      0.98      0.96       951
+    Informes       0.96      0.96      0.96      1320
+       Vagas       0.99      0.98      0.98      1017
+
+    accuracy                           0.96      3586
+   macro avg       0.96      0.94      0.95      3586
+weighted avg       0.96      0.96      0.96      3586
+
+INFO - Train the XGBoost model
+INFO - Parameters: {'learning_rate': 0.2, 'max_depth': 6, 'reg_alpha': 15, 'reg_lambda': 15, 'subsample': 0.5, 'colsample_bytree': 0.7}
+INFO - Accuracy train model: 1.00000
+INFO - Classification Report train model:
+              precision    recall  f1-score   support
+
+    Ciências       1.00      1.00      1.00      1102
+     Eventos       1.00      1.00      1.00      3939
+    Informes       1.00      1.00      1.00      5301
+       Vagas       1.00      1.00      1.00      4000
+
+    accuracy                           1.00     14342
+   macro avg       1.00      1.00      1.00     14342
+weighted avg       1.00      1.00      1.00     14342
+
+INFO - Accuracy test model: 0.96207
+INFO - Classification Report test model:
+              precision    recall  f1-score   support
+
+    Ciências       0.94      0.85      0.89       298
+     Eventos       0.94      0.98      0.96       951
+    Informes       0.96      0.96      0.96      1320
+       Vagas       0.99      0.98      0.98      1017
+
+    accuracy                           0.96      3586
+   macro avg       0.96      0.94      0.95      3586
+weighted avg       0.96      0.96      0.96      3586
+
+INFO - Train the XGBoost model
+INFO - Parameters: {'learning_rate': 0.01, 'max_depth': 1, 'reg_alpha': 300, 'reg_lambda': 400, 'subsample': 0.1, 'colsample_bytree': 0.1}
+INFO - Accuracy train model: 1.00000
+INFO - Classification Report train model:
+              precision    recall  f1-score   support
+
+    Ciências       1.00      1.00      1.00      1102
+     Eventos       1.00      1.00      1.00      3939
+    Informes       1.00      1.00      1.00      5301
+       Vagas       1.00      1.00      1.00      4000
+
+    accuracy                           1.00     14342
+   macro avg       1.00      1.00      1.00     14342
+weighted avg       1.00      1.00      1.00     14342
+
+INFO - Accuracy test model: 0.96207
+INFO - Classification Report test model:
+              precision    recall  f1-score   support
+
+    Ciências       0.94      0.85      0.89       298
+     Eventos       0.94      0.98      0.96       951
+    Informes       0.96      0.96      0.96      1320
+       Vagas       0.99      0.98      0.98      1017
+
+    accuracy                           0.96      3586
+   macro avg       0.96      0.94      0.95      3586
+weighted avg       0.96      0.96      0.96      3586

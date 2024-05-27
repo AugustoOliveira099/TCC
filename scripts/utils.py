@@ -6,6 +6,10 @@ Script com funções que serão utilizadas
 import pandas as pd
 import numpy as np
 import logging
+import unicodedata
+import spacy
+import nltk
+from nltk.corpus import stopwords
 import matplotlib.pyplot as plt
 from bs4 import BeautifulSoup
 import tiktoken
@@ -14,9 +18,15 @@ from dotenv import load_dotenv
 import os
 from sklearn.metrics import classification_report, accuracy_score
 from xgboost import XGBClassifier
+from sklearn.preprocessing import LabelEncoder, Normalizer
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 # Carregar variáveis de ambiente do arquivo .env
 load_dotenv()
+
+# Baixa recursos necessários do NLTK
+nltk.download('stopwords')
+nltk.download('punkt')
 
 # create OpenAi client
 key = os.getenv('OPENAI_API_KEY')
@@ -116,13 +126,85 @@ def get_embedding(text: str, model="text-embedding-3-large") -> list[float]:
    return client.embeddings.create(input = [text], model=model).data[0].embedding
 
 # Evaluate model
-def evaluate_model(model: XGBClassifier, X_data: np.ndarray, y_data: pd.Series, set_name: str = "") -> None:
+def evaluate_model(model: XGBClassifier,
+                   X_data: np.ndarray,
+                   y_data: pd.Series,
+                   label_encoder: LabelEncoder | None = None,
+                   set_name: str = "") -> float:
     # Fazer previsões no conjunto
     y_pred = model.predict(X_data)
 
     # Avaliar a performance do modelo
     accuracy = accuracy_score(y_data, y_pred)
-    report = classification_report(y_data, y_pred)
+    if (label_encoder != None):
+        report = classification_report(y_data, y_pred, target_names=label_encoder.classes_)
+    else:
+        report = classification_report(y_data, y_pred)
 
-    logging.info(f'Accuracy {set_name}: {accuracy}')
+    logging.info(f'Accuracy {set_name}: {accuracy:.5f}')
     logging.info(f'Classification Report {set_name}:\n{report}')
+
+    return accuracy
+
+# Função para remover acentos
+def remove_accents(text):
+    # Normalizar o texto para decompor caracteres compostos
+    text = unicodedata.normalize('NFKD', text)
+    # Remove caracteres diacríticos (combining characters)
+    text = ''.join([c for c in text if not unicodedata.combining(c)])
+    return text
+
+# Função para limpar o texto
+def clean_text(text: str) -> str:
+    text = text.lower()  # Converter para minúsculas
+    # text = text.translate(str.maketrans('', '', string.punctuation))  # Remover pontuação
+    text = remove_accents(text)  # Remover acentos
+    text = remove_html(text) # Remove HTML
+    text = nltk.word_tokenize(text, language='portuguese')  # Tokenizar
+    return text
+
+# Função para remover stopwords
+stop_words = set(stopwords.words('portuguese'))
+def remove_stopwords(tokens) -> list:
+    return [word for word in tokens if word not in stop_words]
+
+# Função para lematizar
+nlp = spacy.load('pt_core_news_sm')  # Carregar o modelo de linguagem do spaCy para português
+def lemmatize(tokens):
+    doc = nlp(' '.join(tokens))
+    return [token.lemma_ for token in doc]
+
+def classify_new_texts(new_texts: pd.Series,
+                       model: XGBClassifier,
+                       vectorizer: TfidfVectorizer,
+                       label_encoder: LabelEncoder,
+                       threshold: float = 0.7) -> list:
+    # Pré-processar os novos textos
+    processed_texts = new_texts.apply(clean_text).apply(remove_stopwords).apply(lemmatize)
+    processed_texts = processed_texts.apply(lambda x: ' '.join(x))
+    
+    # Transformar os textos em vetores numéricos usando TF-IDF
+    X_new = vectorizer.transform(processed_texts)
+    
+    # Normalizar os vetores TF-IDF
+    normalizer = Normalizer()
+    X = normalizer.fit_transform(X_new)
+    
+    # Obter as probabilidades das classes
+    probas = model.predict_proba(X_new)
+    
+    # Filtra previsões com probabilidade maior que o limiar
+    confident_preds = []
+    for i, prob in enumerate(probas):
+        max_prob = np.max(prob)
+        if max_prob >= threshold:
+            pred_label = label_encoder.inverse_transform([np.argmax(prob)])[0]
+            confident_preds.append((new_texts.iloc[i], pred_label, max_prob))
+    
+    return confident_preds
+
+# Transforma confident_predictions em um DataFrame
+def predictions_to_dataframe(predictions):
+    # Cria um DataFrame a partir das previsões confiáveis
+    df = pd.DataFrame(predictions, columns=['combined', 'target', 'probability'])
+    return df
