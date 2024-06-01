@@ -1,5 +1,5 @@
 outs:
-- md5: ff072e35356d606e7a9c2fca4345397d
-  size: 47889862
+- md5: 2c55380dcb417df36e8b96cb29365fbf
+  size: 42673472
   hash: md5
   path: all_classified_news.csv

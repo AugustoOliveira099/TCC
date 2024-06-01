@@ -1,11 +1,19 @@
+import os
 import csv
 import json
 import requests
 import logging
 import time
+from dotenv import load_dotenv
 
 # Endpoint das notícias
 NEWS_ENDPOINT = 'https://webcache01-producao.info.ufrn.br/admin/portal-ufrn/wp-json/wp/v2/noticias-busca/?_embed'
+
+# Carregar variáveis de ambiente do arquivo .env
+load_dotenv()
+
+# create OpenAi client
+news_endpoint = os.getenv('NEWS_ENDPOINT')
 
 # Configuração inicial do logging
 # Com level logging.INFO, também é englobado o level logging.ERROR
@@ -14,13 +22,12 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 def get_news() -> list:
     # Requisita as notícias e as armazena em um arquivo CSV
     try:
-        # Array que armazeraná as notícias
         news = []
 
         logging.info(f'Request the first 100 news')
 
-        # Captura as 100 últimas notícias cadastradas
-        response = requests.get(f'{NEWS_ENDPOINT}&per_page=100&page=1')
+        # Get the first 100 news
+        response = requests.get(f'{news_endpoint}&per_page=100&page=1')
         number_pages = int(response.headers['X-WP-TotalPages'])
         number_news = int(response.headers['X-WP-Total'])
 
@@ -39,7 +46,7 @@ def get_news() -> list:
         initial_time = time.time()
 
         for i in range(2, number_pages + 1):
-            response = requests.get(f'{NEWS_ENDPOINT}&per_page=100&page={i}')
+            response = requests.get(f'{news_endpoint}&per_page=100&page={i}')
 
             # Armazena o conteúdo das notícias
             response_content = json.loads(response.content)

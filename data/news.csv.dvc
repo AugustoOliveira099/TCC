@@ -2,4 +2,4 @@ outs:
 - md5: 01af32967f6d70592fa7bd83b9985d7b
   size: 58104486
   hash: md5
-  path: merged_news.csv
+  path: news.csv
