@@ -1,0 +1,81 @@
+INFO - Read data
+INFO - Naming clusters with t-SNE
+
+INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+Cluster 0 Tema: O tema em comum entre as notícias apresentadas é "Eventos". Todas as notícias descrevem a realização de eventos, como recitais, seminários, aulas magnas, apresentações musicais e espetáculos teatrais.
+Título: EMUFRN realiza recital de piano com Enrique Graf; Conteúdo: A Escola de Música da UFRN (EMUFRN) realiza, nesta q
+Título: Trilhas Potiguares promove Seminário de Integração; Conteúdo: O Programa Trilhas Potiguares, vinculado à Pró-Rei
+Título: Diversidade é foco de aula magna da UFRN; Conteúdo: Universidade. Diversidade. Cidadania. A tríade que alarga e 
+Título: Vídeo da Filarmônica da UFRN atinge 1,9 mil visualizações; Conteúdo: Lançado na última terça, dia 29 de setembro
+Título: Grupo teatral do Ceres apresenta espetáculo neste sábado, 8; Conteúdo: Levar a arte para todos os povos de todos
+------------------------------------------------------------------------------------------------------------------------------------------------------
+INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+Cluster 1 Tema: O tema que as notícias têm em comum é "Eventos". Todas as notícias mencionam a realização de seminários, cursos, sessões de documentários, minicursos e outras atividades que envolvem a participação de alunos, professores e a comunidade acadêmica em eventos específicos.
+Título: Seminário no CCHLA debate estudos do texto e do discurso; Conteúdo:  O Grupo de Pesquisa em Estudos do Texto e d
+Título: Alunos da UFRN projetam equipamento para estudos de corrosão; Conteúdo: O Laboratório de Soldagem e Inspeção (LS
+Título: Ecocine apresenta documentário e mesa-redonda sobre Mulher na Ciência; Conteúdo: O Centro Acadêmico do curso de 
+Título: PET Química oferece curso para ingressantes; Conteúdo: Com o objetivo de ajudar os alunos ingressantes do curso 
+Título: Ágora abre inscrições para curso gratuito de mandarim; Conteúdo: O Instituto Ágora/UFRN, em parceria com o Cente
+------------------------------------------------------------------------------------------------------------------------------------------------------
+INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+Cluster 2 Tema: O tema que as notícias têm em comum é "Eventos". Todas as notícias mencionam a realização de eventos, como workshops, palestras, semanas de ciência e tecnologia, e debates sobre economia e desenvolvimento.
+Título: SIPAC possibilita assinatura digital de documentos à comunidade externa; Conteúdo: 
+O Sistema Integrado de Patri
+Título: Motores do Desenvolvimento discute futuro da economia de serviços; Conteúdo: Cerca de 350 participantes ouviram 
+Título: Aluno da UFRN cria ferramenta para monitorar deputados; Conteúdo: O aluno do curso de Estatística da UFRN, Rayla
+Título: STI participa de evento promovido por IFES do Brasil; Conteúdo: A Superintendência de Tecnologia da Informação d
+Título: ECT recebe criador do conceito Cidades Inteligentes e Humanas; Conteúdo: A Escola de Ciências e Tecnologia (ECT)
+------------------------------------------------------------------------------------------------------------------------------------------------------
+INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+Cluster 3 Tema: O tema que as notícias têm em comum é "Informes". Todas as notícias fornecem informações e atualizações sobre atividades, pesquisas, eventos e serviços relacionados à Universidade Federal do Rio Grande do Norte (UFRN). Elas não se concentram exclusivamente em "Ciências", "Eventos" ou "Vagas", mas
+Título: Unidades devem enviar demandas de aquisições e contratações até quinta-feira; Conteúdo: Os setores da Universida
+Título: Hospitais da UFRN realizam pesquisa de clima organizacional; Conteúdo: A Maternidade Escola Januário Cicco (MEJC
+Título: Escola Multicampi oferece núcleo de apoio à comunidade acadêmica; Conteúdo: A Escola Multicampi de Ciências Médi
+Título: UFRN pesquisa condição de trabalhadores do turismo; Conteúdo: 
+Responsáveis por 65% do Produto Interno Bruto (PI
+Título: Dia Mundial da Alergia alerta para uma das doenças mais frequentes no mundo; Conteúdo: No dia 8 de julho é celeb
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+######################################################################################################################################################
+
+
+
+
+INFO - Naming clusters without t-SNE
+
+INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+Cluster 0 Tema: O tema que as notícias têm em comum é "Ciências". Todas as notícias abordam pesquisas, projetos acadêmicos, eventos científicos e iniciativas educacionais que envolvem diferentes áreas do conhecimento científico, como a qualidade de vida no trabalho remoto, linguagem inclusiva, anatomia, e telemedicina.
+Título: Pesquisa avalia impactos do trabalho remoto para professores; Conteúdo: A doutoranda Gilmara Barros e a mestrand
+Título: Parceria entre UFRN e Unifesp incentiva linguagem inclusiva; Conteúdo: O projeto de extensão Meu corpo fala, mas
+Título: Escritora lança livro sobre o cotidiano de médicos do RN; Conteúdo: Um relato poético sobre o cotidiano de 20 mé
+Título: Trabalho do Departamento de Morfologia ganha prêmio nacional; Conteúdo: Um trabalho do Departamento de Morfologi
+Título: Rede RUTE aprova projeto SIG da Maternidade Januário Cicco; Conteúdo: O Comitê Assessor da Rede Universitária de
+------------------------------------------------------------------------------------------------------------------------------------------------------
+INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+Cluster 1 Tema: O tema em comum entre as notícias apresentadas é "Eventos". Todas as notícias descrevem a realização de diferentes eventos promovidos pela Universidade Federal do Rio Grande do Norte (UFRN), abordando temas variados como meio ambiente, assistência ao aluno, especialidades pediátricas, bioquímica e profissões.
+Título: Infra/UFRN promove evento sobre meio ambiente; Conteúdo: A Superintendência de Infraestrutura (Infra/UFRN) promo
+Título: UFRN realiza encontro de profissionais de assistência ao aluno; Conteúdo: A Universidade Federal do Rio Grande d
+Título: Depedi realiza Jornada de Especialidades Pediátricas; Conteúdo: O Departamento de Pediatria (Depedi), do Centro 
+Título: Programa de Pós em Bioquímica realiza curso a partir do dia 7; Conteúdo: Entre os dias 7 e 13 de dezembro, o Pro
+Título: Mostra de Profissões da UFRN acontece no formato presencial; Conteúdo: A 15ª Mostra de Profissões da Universidad
+------------------------------------------------------------------------------------------------------------------------------------------------------
+INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+Cluster 2 Tema: O tema que as notícias têm em comum é "Informes". Todas as notícias fornecem informações sobre eventos, resultados, aprovações e estreias relacionadas à Universidade Federal do Rio Grande do Norte (UFRN) e suas atividades.
+Título: Dasap divulga resultado final do Auxílio Transporte da EAJ; Conteúdo: 
+Assegurar a frequência do estudante em vu
+Título: PAX é apresentado a membros do Conselho de Desenvolvimento Metropolitano; Conteúdo: O Conselho de Desenvolviment
+Título: Consad aprova indicação de gestores do IIP, Proplan e MCC; Conteúdo: O Conselho de Administração da Universidade
+Título: UFRN forma primeiro aluno no curso de Letras Libras/Língua Portuguesa; Conteúdo: Délio Henrique Delfino de Olive
+Título: TVU estreia programa sobre cidadania; Conteúdo: A TV Universitária (TVU/RN) estreia, nesta segunda-feira, 10, o 
+------------------------------------------------------------------------------------------------------------------------------------------------------
+INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+Cluster 3 Tema: O tema em comum entre as notícias apresentadas é "Vagas". Todas as notícias tratam de processos seletivos, inscrições para cursos de mestrado, ou oportunidades de bolsas e empregos em diversas áreas acadêmicas e de pesquisa.
+Título: LAIS realiza processo seletivo para alunos de Engenharias; Conteúdo: O Laboratório de Inovação Tecnológica em Sa
+Título: Nuplam abre processo seletivo para especialista na área de automação; Conteúdo: O Núcleo de Pesquisa em Alimento
+Título: Mestrado Profissional em Engenharia Elétrica abre inscrições; Conteúdo: O Mestrado Profissional em Engenharia El
+Título: Grupo Criação abre seleção de bolsista; Conteúdo: O Departamento de Engenharia de Produção da UFRN, por meio do 
+Título: Mestrado em Produção Animal inscreve até 31 de janeiro; Conteúdo: O Programa de Pós-Graduação em Produção Animal
+------------------------------------------------------------------------------------------------------------------------------------------------------

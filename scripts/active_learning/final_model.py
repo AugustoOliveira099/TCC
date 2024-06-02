@@ -72,7 +72,7 @@ def main() -> None:
     model.fit(X_train, y_train)
 
     # Evaluate train model
-    evaluate_model(model, X_train, y_train, label_encoder, "train model")
+    evaluate_model(model, X_train, y_train, "train model", label_encoder)
 
     # Evaluate test model
-    evaluate_model(model, X_test, y_test, label_encoder, "test model")
+    evaluate_model(model, X_test, y_test, "test model", label_encoder)

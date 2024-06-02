@@ -107,10 +107,10 @@ def main() -> None:
     model.fit(X_train, y_train)
 
     # Evaluate train model
-    evaluate_model(model, X_train, y_train, label_encoder, "train model")
+    evaluate_model(model, X_train, y_train, "train model", label_encoder)
 
     # Evaluate test model
-    test_accuracy = evaluate_model(model, X_test, y_test, label_encoder, "test model")
+    test_accuracy = evaluate_model(model, X_test, y_test, "test model", label_encoder)
 
     # Verifica qual o melhor modelo com base na acurácia do modelo de teste
     if (test_accuracy > greater_accuracy):

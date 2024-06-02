@@ -2,7 +2,7 @@ import pandas as pd
 import logging
 import numpy as np
 from ast import literal_eval
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 from sklearn.manifold import TSNE
@@ -23,13 +23,13 @@ def main() -> None:
 
     # Normalize matrix
     logging.info('Normalize matrix')
-    scaler = StandardScaler()
+    scaler = MinMaxScaler()
     matrix_scaled = scaler.fit_transform(matrix)
 
     # KMeans without t-SNE
     logging.info('Init KMeans without t-SNE')
     n_clusters = 4
-    kmeans = KMeans(n_clusters=n_clusters, init='k-means++', n_init=10, random_state=42)
+    kmeans = KMeans(n_clusters=n_clusters, init='k-means++', n_init=20, max_iter=500, tol=0.00001, random_state=42)
     kmeans.fit(matrix_scaled)
     labels = kmeans.labels_
     df['cluster_without_tsne'] = labels
@@ -41,14 +41,14 @@ def main() -> None:
 
     # KMeans with t-SNE
     logging.info('Init KMeans with t-SNE')
-    kmeans_tsne = KMeans(n_clusters=n_clusters, init='k-means++', n_init=10, random_state=42)
+    kmeans_tsne = KMeans(n_clusters=n_clusters, init='k-means++', n_init=20, max_iter=500, tol=0.00001, random_state=42)
     kmeans_tsne.fit(matrix_tsne)
     labels_tsne = kmeans_tsne.labels_
     df['cluster_with_tsne'] = labels_tsne
 
     # Save the results to a CSV file
     logging.info('Save data with clusters')
-    df.drop(['title', 'content', 'combined', 'n_tokens', 'target'], axis=1, inplace=True)
+    df.drop(['title', 'content', 'n_tokens', 'target'], axis=1, inplace=True)
     tsne_df = pd.DataFrame(matrix_tsne, columns=['tsne1', 'tsne2'])
     df = df.reset_index(drop=True)  # Reinicia os índices do DataFrame original
     df = pd.concat([df, tsne_df], axis=1)
@@ -77,3 +77,5 @@ def main() -> None:
         plt.scatter(avg_x, avg_y, marker='x', color=marker_color, s=100)
     plt.title('KMeans Clusters with t-SNE')
     plt.savefig('../../images/clusters_with_tse.png')
+
+main()

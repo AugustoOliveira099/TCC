@@ -59,8 +59,8 @@ def classify_new_texts(new_texts: pd.Series,
 def evaluate_model(model: XGBClassifier,
                    X_data: np.ndarray,
                    y_data: pd.Series,
-                   label_encoder: LabelEncoder | None = None,
-                   set_name: str = "") -> float:
+                   set_name: str = "",
+                   label_encoder: LabelEncoder | None = None) -> float:
     """
     Evaluates the performance of a given XGBClassifier model on the provided dataset.
 
@@ -68,8 +68,8 @@ def evaluate_model(model: XGBClassifier,
         model (XGBClassifier): The model to evaluate.
         X_data (np.ndarray): The feature data to use for predictions.
         y_data (pd.Series): The true labels corresponding to the feature data.
-        label_encoder (LabelEncoder, optional): A label encoder for decoding class labels. Defaults to None.
         set_name (str, optional): The name of the dataset being evaluated (e.g., 'train', 'test'). Defaults to an empty string.
+        label_encoder (LabelEncoder, optional): A label encoder for decoding class labels. Defaults to None.
 
     Returns:
         float: The accuracy of the model on the provided dataset.

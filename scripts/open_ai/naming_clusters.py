@@ -22,7 +22,6 @@ n_clusters = 4
 news_per_cluster = 5
 
 logging.info("Read data")
-embed_df = pd.read_csv('../../data/noticias_ufrn_embeddings.csv')
 cluters_df = pd.read_csv('../../data/noticias_ufrn_clusters.csv')
 
 def names_clusters(cluster_column):
@@ -30,7 +29,7 @@ def names_clusters(cluster_column):
         print(f"Cluster {i} Tema:", end=" ")
 
         reviews = "\n\n\n".join(
-            embed_df[cluters_df[cluster_column] == i]
+            cluters_df[cluters_df[cluster_column] == i]
             .combined.str.replace("Título: ", "")
             .str.replace("; Conteúdo: ", ":  ")
             .sample(news_per_cluster, random_state=43)
@@ -51,7 +50,7 @@ def names_clusters(cluster_column):
             presence_penalty=0)
         print(response.choices[0].message.content.replace("\n", ""))
 
-        sample_cluster_rows = embed_df[cluters_df[cluster_column] == i].sample(news_per_cluster, random_state=43)
+        sample_cluster_rows = cluters_df[cluters_df[cluster_column] == i].sample(news_per_cluster, random_state=43)
         for j in range(news_per_cluster):
             print(sample_cluster_rows.combined.str[:120].values[j])
 
@@ -67,3 +66,5 @@ def main() -> None:
 
     logging.info("Naming clusters without t-SNE\n")
     names_clusters("cluster_without_tsne")
+
+main()

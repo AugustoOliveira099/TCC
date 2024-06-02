@@ -6,9 +6,6 @@ import logging
 import time
 from dotenv import load_dotenv
 
-# Endpoint das notícias
-NEWS_ENDPOINT = 'https://webcache01-producao.info.ufrn.br/admin/portal-ufrn/wp-json/wp/v2/noticias-busca/?_embed'
-
 # Carregar variáveis de ambiente do arquivo .env
 load_dotenv()
 
