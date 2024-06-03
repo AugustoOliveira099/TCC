@@ -12,8 +12,7 @@ from dotenv import load_dotenv
 relative_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../'))
 sys.path.append(relative_path)
 
-from utils.preprocessing import remove_html
-from utils.data_collection import fetch_embedding
+from utils.preprocessing import preprocess_text
 
 # Configuração inicial do logging
 # Com level logging.INFO, também é englobado o level logging.ERROR
@@ -26,70 +25,56 @@ load_dotenv()
 WANDB_API_KEY = os.getenv('WANDB_API_KEY')
 
 def main() -> None:
-    # embedding model parameters
-    embedding_model = "text-embedding-3-large"
-    embedding_encoding = "cl100k_base"  # this the encoding for text-embedding-3-large
-    max_tokens = 8191  # the maximum input for text-embedding-3-large is 8191
-
     wandb.login(key=WANDB_API_KEY)
-    run = wandb.init(project="open-ai-model", job_type="inference")
+    run = wandb.init(project="active-learning-model", job_type="inference")
 
-    logging.info('Downloading model artifact')
-    model_artifact = run.use_artifact('tcc-ufrn/open-ai-model/xgboost_model:latest', type='model')
-    model_artifact_dir = model_artifact.download()
+    logging.info('Access and download model')
+    downloaded_model_path = run.use_model('tcc-ufrn/model-registry/xgboost_model:latest')
+    # print(downloaded_model_path)
+    # model_dir = downloaded_model_path.download()
 
-    # Verificar e imprimir o caminho do modelo
-    model_path = os.path.join(model_artifact_dir, 'xgboost_model.json')
+    # # Verificar e imprimir o caminho do modelo
+    # model_path = os.path.join(model_dir, 'xgboost_model.json')
 
     # Verificar se o arquivo existe
-    if os.path.exists(model_path):
-        logging.info(f"Model file exists at: {model_path}")
+    if os.path.exists(downloaded_model_path):
+        logging.info(f"Model file exists at: {downloaded_model_path}")
     else:
-        logging.error(f"Model file does NOT exist at: {model_path}")
+        logging.error(f"Model file does NOT exist at: {downloaded_model_path}")
         return
 
     # Load model
     logging.info('Loading model')
     model = XGBClassifier()
-    model.load_model(model_path)
+    model.load_model(downloaded_model_path)
 
-    logging.info('Downloading scaler artifact')
-    scaler_artifact = run.use_artifact('tcc-ufrn/open-ai-model/scaler:latest', type='preprocessing')
-    scaler_artifact_dir = scaler_artifact.download()
+    logging.info('Downloading TF-IDF artifact')
+    tfidf_artifact = run.use_artifact('tcc-ufrn/active-learning-model/tfidf_vectorizer:latest', type='model')
+    tfidf_artifact_dir = tfidf_artifact.download()
 
     # Verificar e imprimir o caminho do modelo
-    scaler_path = os.path.join(scaler_artifact_dir, 'scaler.pkl')
+    tfidf_path = os.path.join(tfidf_artifact_dir, 'tfidf_vectorizer.pkl')
 
     # Verificar se o arquivo existe
-    if os.path.exists(scaler_path):
-        logging.info(f"Scaler file exists at: {scaler_path}")
+    if os.path.exists(tfidf_path):
+        logging.info(f"TF-IDF file exists at: {tfidf_path}")
     else:
-        logging.error(f"Scaler file does NOT exist at: {scaler_path}")
+        logging.error(f"TF-IDF file does NOT exist at: {tfidf_path}")
         return
     
-    # Load scaler
-    logging.info('Loading scaler')
-    scaler = joblib.load(scaler_path)
+    # Load TF-IDF
+    logging.info('Loading TF-IDF file')
+    tfidf_vectorizer = joblib.load(tfidf_path)
 
     def predict(noticia):
-        # Remove HTML from input
-        noticia = remove_html(noticia)
+        # Preprocess text
+        noticia_clean = preprocess_text(noticia)
 
-        # Check the number of tokens
-        encoding = tiktoken.get_encoding(embedding_encoding)
-        num_tokens = len(encoding.encode(noticia))
-        if num_tokens > max_tokens:
-            return 'A notícia é muito longa para ser processada.'
-        
-        # Get embed from OpenAi API
-        embed = fetch_embedding(noticia, embedding_model)
-        embed = np.array(embed)
-
-        # Normalizes data
-        embed_scaled = scaler.transform(embed.reshape(1, -1))
+        # Vetorize text
+        new_tfidf = tfidf_vectorizer.transform([noticia_clean])
 
         # Get predict
-        probas = model.predict_proba(embed_scaled)
+        probas = model.predict_proba(new_tfidf)
         predicted_class = np.argmax(probas)
 
         output = "A notícia é classificada como sendo do tema "
@@ -110,7 +95,8 @@ def main() -> None:
 
         return output
 
-    description_text = "Submeta uma notícia para que ela seja classificada entre:\n"\
+    description_text = "Este classificados foi feito utilizando a active learning e XGBoost.\n\n"\
+                    "Submeta uma notícia para que ela seja classificada entre:\n"\
                     "- <b>Ciências:</b> Uma notícia com o tema ciências;\n"\
                     "- <b>Eventos:</b> Uma notícia que anuncia um evento;\n"\
                     "- <b>Vagas:</b> Uma notícia que anuncia vagas;\n"\

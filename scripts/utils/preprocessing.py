@@ -127,3 +127,9 @@ def combine_columns(df: pd.DataFrame,
     """
     df[result_column] = 'Título: ' + df[title_column].str.strip() + '; Conteúdo: ' + df[content_column].str.strip()
     return df
+
+def preprocess_text(text):
+    text = clean_text(text)
+    text = remove_stopwords(text)
+    text = lemmatize(text)
+    return ' '.join(text)

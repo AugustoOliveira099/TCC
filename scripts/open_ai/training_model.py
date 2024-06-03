@@ -29,7 +29,23 @@ WANDB_API_KEY = os.getenv('WANDB_API_KEY')
 
 def main() -> None:
     wandb.login(key=WANDB_API_KEY)
-    wandb.init(project="open-ai-model")
+    # Start a run, tracking hyperparameters
+    wandb.init(
+        project="open-ai-model",
+        config={
+            'learning_rate': 0.2,
+            'max_depth': 6,
+            'reg_alpha': 15,
+            'reg_lambda': 15,
+            'subsample': 0.5,
+            'colsample_bytree': 0.7,
+            'eval_metric': 'mlogloss',
+            'random_state': 42,
+            'objective': 'multi:softmax',
+            'num_class': 4,
+        }
+    )
+    config = wandb.config
 
     logging.info('Read data')
     datafile_path = '../../data/noticias_ufrn_clusters.csv'
@@ -102,16 +118,16 @@ def main() -> None:
     # }
 
     logging.info('Train the XGBoost model without tsne data')
-    model = XGBClassifier(learning_rate=0.2,
-                        max_depth=6,
-                        reg_alpha=15,
-                        reg_lambda=15,
-                        subsample=0.5,
-                        colsample_bytree=0.7,
-                        eval_metric='mlogloss',
-                        random_state=42,
-                        objective='multi:softmax',
-                        num_class=4)
+    model = XGBClassifier(learning_rate=config['learning_rate'],
+                        max_depth=config['max_depth'],
+                        reg_alpha=config['reg_alpha'],
+                        reg_lambda=config['reg_lambda'],
+                        subsample=config['subsample'],
+                        colsample_bytree=config['colsample_bytree'],
+                        eval_metric=config['eval_metric'],
+                        random_state=config['random_state'],
+                        objective=config['objective'],
+                        num_class=config['num_class'])
     model.fit(X_train, y_train)
 
     # Evaluate train model
@@ -123,8 +139,10 @@ def main() -> None:
     # Evaluate test model
     evaluate_model(model, X_test, y_test, "test")
 
+    # Save model
     # model.save_model('xgboost_model.json')
 
+    # Upload artifact to wandb
     # artifact = wandb.Artifact('xgboost_model', type='model')
     # artifact.add_file('xgboost_model.json')
     # wandb.log_artifact(artifact)

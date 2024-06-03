@@ -7,3 +7,9 @@ scripts/open_ai/wandb/
 scripts/open_ai/artifacts/
 
 scripts/open_ai/flagged/
+
+scripts/active_learning/wandb/
+
+scripts/active_learning/artifacts/
+
+scripts/active_learning/flagged/
