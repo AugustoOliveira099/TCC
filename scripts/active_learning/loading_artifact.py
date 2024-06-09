@@ -4,7 +4,6 @@ import sys
 import os
 import wandb
 import joblib
-import tiktoken
 import gradio as gr
 from xgboost import XGBClassifier
 from dotenv import load_dotenv

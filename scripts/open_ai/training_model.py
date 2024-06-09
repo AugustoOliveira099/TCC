@@ -5,7 +5,8 @@ import sys
 import os
 import wandb
 import joblib
-from sklearn.preprocessing import StandardScaler
+from wandb.integration.xgboost import WandbCallback
+from sklearn.preprocessing import MinMaxScaler
 from xgboost import XGBClassifier
 from sklearn.model_selection import train_test_split
 from ast import literal_eval
@@ -30,7 +31,7 @@ WANDB_API_KEY = os.getenv('WANDB_API_KEY')
 def main() -> None:
     wandb.login(key=WANDB_API_KEY)
     # Start a run, tracking hyperparameters
-    wandb.init(
+    run = wandb.init(
         project="open-ai-model",
         config={
             'learning_rate': 0.2,
@@ -51,33 +52,33 @@ def main() -> None:
     datafile_path = '../../data/noticias_ufrn_clusters.csv'
     df = pd.read_csv(datafile_path)
 
-    # Lê a matriz de valores com redução de dimensionalidade
-    matrix_tsne = df[['tsne1', 'tsne2']].values
+    # # Lê a matriz de valores com redução de dimensionalidade
+    # matrix_tsne = df[['tsne1', 'tsne2']].values
 
-    # Lê os rótulos gerados pelo KMeans com t-SNE
-    cluster_column = 'cluster_with_tsne'
-    labels = df[cluster_column]
+    # # Lê os rótulos gerados pelo KMeans com t-SNE
+    # cluster_column = 'cluster_with_tsne'
+    # labels = df[cluster_column]
 
-    logging.info('Data split')
-    # Dividir os dados em conjuntos de treinamento e teste 80/20
-    X_train_tsne, X_test_tsne, y_train_tsne, y_test_tsne = train_test_split(matrix_tsne, labels, test_size=0.2, random_state=42)
+    # logging.info('Data split')
+    # # Dividir os dados em conjuntos de treinamento e teste 80/20
+    # X_train_tsne, X_test_tsne, y_train_tsne, y_test_tsne = train_test_split(matrix_tsne, labels, test_size=0.2, random_state=42)
 
-    # Dividir os dados de treinamento em treinamento e dev, totalizando 80/10/10
-    X_test_tsne, X_dev_tsne, y_test_tsne, y_dev_tsne = train_test_split(X_test_tsne, y_test_tsne, test_size=0.5, random_state=42)
+    # # Dividir os dados de treinamento em treinamento e dev, totalizando 80/10/10
+    # X_test_tsne, X_dev_tsne, y_test_tsne, y_dev_tsne = train_test_split(X_test_tsne, y_test_tsne, test_size=0.5, random_state=42)
 
-    # Treina o modelo XGBoost
-    logging.info('Train the XGBoost model with tsne data')
-    model = XGBClassifier(eval_metric='mlogloss', random_state=42)
-    model.fit(X_train_tsne, y_train_tsne)
+    # # Treina o modelo XGBoost
+    # logging.info('Train the XGBoost model with tsne data')
+    # model = XGBClassifier(eval_metric='mlogloss', random_state=42)
+    # model.fit(X_train_tsne, y_train_tsne)
 
-    # Evaluate train model
-    evaluate_model(model, X_train_tsne, y_train_tsne, "tsne train")
+    # # Evaluate train model
+    # evaluate_model(model, X_train_tsne, y_train_tsne, "tsne train")
 
-    # Evaluate dev model
-    evaluate_model(model, X_dev_tsne, y_dev_tsne, "tsne dev")
+    # # Evaluate dev model
+    # evaluate_model(model, X_dev_tsne, y_dev_tsne, "tsne dev")
 
-    # Evaluate test model
-    evaluate_model(model, X_test_tsne, y_test_tsne, "tsne test")
+    # # Evaluate test model
+    # evaluate_model(model, X_test_tsne, y_test_tsne, "tsne test")
 
     # Create embedding matrix
     logging.info('Create embedding matrix')
@@ -86,7 +87,7 @@ def main() -> None:
 
     # Normalizes matrix
     logging.info('Normalize matrix')
-    scaler = StandardScaler()
+    scaler = MinMaxScaler()
     matrix_scaled = scaler.fit_transform(matrix)
 
     # Save scaler
@@ -95,6 +96,8 @@ def main() -> None:
     artifact = wandb.Artifact(name="scaler", type="preprocessing")
     artifact.add_file(scaler_path, name="scaler.pkl")
     wandb.log_artifact(artifact)
+
+    wandb.finish()
 
     # Selecionar os rótulos gerados pelo KMeans sem t-SNE
     cluster_column = 'cluster_without_tsne'
@@ -127,7 +130,8 @@ def main() -> None:
                         eval_metric=config['eval_metric'],
                         random_state=config['random_state'],
                         objective=config['objective'],
-                        num_class=config['num_class'])
+                        num_class=config['num_class'],
+                        callbacks=[WandbCallback(log_model=True)])
     model.fit(X_train, y_train)
 
     # Evaluate train model
@@ -139,14 +143,33 @@ def main() -> None:
     # Evaluate test model
     evaluate_model(model, X_test, y_test, "test")
 
+    y_pred = model.predict(X_test)
+    y_probas = model.predict_proba(X_test)
+
+    wandb.sklearn.plot_classifier(
+        model,
+        X_train,
+        X_test,
+        y_train,
+        y_test,
+        y_pred,
+        y_probas,
+        ['Ciências', 'Eventos', 'Informes', 'Vagas'],
+        model_name=f"open_ai_model",
+        feature_names=None,
+    )
+
     # Save model
-    # model.save_model('xgboost_model.json')
+    model.save_model('xgboost_model_open_ai.json')
+
+    # Log and link the model to the Model Registry
+    run.link_model(path="./xgboost_model_open_ai.json", registered_model_name="xgboost_model_open_ai")
 
     # Upload artifact to wandb
     # artifact = wandb.Artifact('xgboost_model', type='model')
     # artifact.add_file('xgboost_model.json')
     # wandb.log_artifact(artifact)
     
-    wandb.finish()
+    # wandb.finish()
 
 main()

@@ -4,11 +4,13 @@ import logging
 import pandas as pd
 import wandb
 import joblib
+from wandb.integration.xgboost import WandbCallback
 from sklearn.preprocessing import LabelEncoder
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
 from xgboost import XGBClassifier
 from dotenv import load_dotenv
+
 
 relative_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../'))
 sys.path.append(relative_path)
@@ -129,7 +131,7 @@ def main() -> None:
             objective=config['objective'],
             num_class=config['num_class'],
         )
-        model.fit(X_train, y_train)
+        model.fit(X_train, y_train, callbacks=[WandbCallback(log_model=True)])
 
         # Evaluate train model
         train_accuracy = evaluate_model(model, X_train, y_train, "train model", label_encoder)
@@ -169,11 +171,6 @@ def main() -> None:
 
     # Log and link the model to the Model Registry
     run.link_model(path="./xgboost_model.json", registered_model_name="xgboost_model")
-
-    # Upload artifact to wandb
-    artifact = wandb.Artifact('xgboost_model', type='model')
-    artifact.add_file('xgboost_model.json')
-    wandb.log_artifact(artifact)
 
     # Mark the run as finished
     wandb.finish()
