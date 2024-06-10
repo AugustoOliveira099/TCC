@@ -35,6 +35,25 @@ def main() -> None:
     # Login into wandb
     wandb.login(key=WANDB_API_KEY)
 
+    # Start a run, tracking hyperparameters
+    run = wandb.init(
+        project="active-learning-model",
+        config={
+            "metric": "accuracy",
+            'learning_rate': 0.2,
+            'max_depth': 6,
+            'reg_alpha': 5,
+            'reg_lambda': 5,
+            'subsample': 0.5,
+            'colsample_bytree': 0.7,
+            'eval_metric': 'mlogloss',
+            'random_state': 42,
+            'objective': 'multi:softmax',
+            'num_class': 4,
+        }
+    )
+    config = wandb.config
+
     logging.info('Read data')
     datafile_path = '../../data/all_classified_news.csv'
     df = pd.read_csv(datafile_path)
@@ -64,9 +83,6 @@ def main() -> None:
     vectorizer = TfidfVectorizer()
     X = vectorizer.fit_transform(processed_texts)
 
-    # Start a run
-    wandb.init(project="active-learning-model")
-
     # Save TfidfVectorizer instance
     vectorizer_filename = 'tfidf_vectorizer.pkl'
     joblib.dump(vectorizer, vectorizer_filename)
@@ -74,100 +90,54 @@ def main() -> None:
     artifact.add_file(vectorizer_filename, name="tfidf_vectorizer.pkl")
     wandb.log_artifact(artifact)
 
-    # Mark the run as finished
-    wandb.finish()
-
-    logging.info('Train model')
+    logging.info('Data split')
 
     # Data split
-    X_train, X_test, y_train, y_test = train_test_split(X, targets_encoded, test_size=0.2, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X, targets_encoded, test_size=0.1, random_state=42)
 
-    # Instancia variável que contém o melhor modelo testado
-    best_model = XGBClassifier()
-    greater_accuracy = 0
+    # Criar e treinar o modelo XGBoost
+    logging.info('Train the XGBoost model')
+    model = XGBClassifier(
+        learning_rate=config['learning_rate'],
+        max_depth=config['max_depth'],
+        reg_alpha=config['reg_alpha'],
+        reg_lambda=config['reg_lambda'],
+        subsample=config['subsample'],
+        colsample_bytree=config['colsample_bytree'],
+        eval_metric=config['eval_metric'],
+        random_state=config['random_state'],
+        objective=config['objective'],
+        num_class=config['num_class'],
+        callbacks=[WandbCallback(log_model=True)]
+    )
+    model.fit(X_train, y_train)
 
-    param_grid = {
-        'learning_rate': [0.2, 0.2, 0.2],
-        'max_depth': [8, 7, 6],
-        'reg_alpha': [15, 5, 5],
-        'reg_lambda': [15, 5, 5],
-        'subsample': [0.5, 0.7, 0.5],
-        'colsample_bytree': [0.7, 0.5, 0.7],
-    }
+    # Evaluate train model
+    train_accuracy = evaluate_model(model, X_train, y_train, "train model", label_encoder)
+    wandb.log({"train accuracy": train_accuracy})
 
-    for i in range(3):
-        # Start a run, tracking hyperparameters
-        wandb.init(
-            project="active-learning-model",
-            config={
-                "metric": "accuracy",
-                'learning_rate': param_grid['learning_rate'][i],
-                'max_depth': param_grid['max_depth'][i],
-                'reg_alpha': param_grid['reg_alpha'][i],
-                'reg_lambda': param_grid['reg_lambda'][i],
-                'subsample': param_grid['subsample'][i],
-                'colsample_bytree': param_grid['colsample_bytree'][i],
-                'eval_metric': 'mlogloss',
-                'random_state': 42,
-                'objective': 'multi:softmax',
-                'num_class': 4,
-            }
-        )
-        config = wandb.config
+    # Evaluate test model
+    test_accuracy = evaluate_model(model, X_test, y_test, "test model", label_encoder)
+    wandb.log({"test accuracy": test_accuracy})
 
-        logging.info('Train the XGBoost model')
-        logging.info(f'Parameters: { config }')
-        
-        # Criar e treinar o modelo XGBoost
-        model = XGBClassifier(
-            learning_rate=config['learning_rate'],
-            max_depth=config['max_depth'],
-            reg_alpha=config['reg_alpha'],
-            reg_lambda=config['reg_lambda'],
-            subsample=config['subsample'],
-            colsample_bytree=config['colsample_bytree'],
-            eval_metric=config['eval_metric'],
-            random_state=config['random_state'],
-            objective=config['objective'],
-            num_class=config['num_class'],
-        )
-        model.fit(X_train, y_train, callbacks=[WandbCallback(log_model=True)])
+    y_pred = model.predict(X_test)
+    y_probas = model.predict_proba(X_test)
 
-        # Evaluate train model
-        train_accuracy = evaluate_model(model, X_train, y_train, "train model", label_encoder)
-        wandb.log({"train accuracy": train_accuracy})
-
-        # Evaluate test model
-        test_accuracy = evaluate_model(model, X_test, y_test, "test model", label_encoder)
-        wandb.log({"test accuracy": test_accuracy})
-
-        y_pred = model.predict(X_test)
-        y_probas = model.predict_proba(X_test)
-
-        wandb.sklearn.plot_classifier(
-            model,
-            X_train,
-            X_test,
-            y_train,
-            y_test,
-            y_pred,
-            y_probas,
-            label_encoder.classes_,
-            model_name=f"model_{i}",
-            feature_names=None,
-        )
-
-        if test_accuracy > greater_accuracy:
-            logging.info(f'beste model: {i}')
-            best_model = model
-
-        # Mark the run as finished
-        wandb.finish()
-
-    run = wandb.init(project="active-learning-model")
+    wandb.sklearn.plot_classifier(
+        model,
+        X_train,
+        X_test,
+        y_train,
+        y_test,
+        y_pred,
+        y_probas,
+        label_encoder.classes_,
+        model_name=f"active_learning_model",
+        feature_names=None,
+    )
 
     # Save model
-    best_model.save_model('xgboost_model.json')
+    model.save_model('xgboost_model.json')
 
     # Log and link the model to the Model Registry
     run.link_model(path="./xgboost_model.json", registered_model_name="xgboost_model")

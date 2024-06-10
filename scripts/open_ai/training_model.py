@@ -97,8 +97,6 @@ def main() -> None:
     artifact.add_file(scaler_path, name="scaler.pkl")
     wandb.log_artifact(artifact)
 
-    wandb.finish()
-
     # Selecionar os rótulos gerados pelo KMeans sem t-SNE
     cluster_column = 'cluster_without_tsne'
     labels = df[cluster_column]
@@ -108,8 +106,8 @@ def main() -> None:
     # Dividir os dados em conjuntos de treinamento e teste 90/10
     X_train, X_test, y_train, y_test = train_test_split(matrix_scaled, labels, test_size=0.1, random_state=42)
 
-    # Dividir os dados de treinamento em treinamento e dev, totalizando 90/5/5
-    X_test, X_dev, y_test, y_dev = train_test_split(X_test, y_test, test_size=0.5, random_state=42)
+    # # Dividir os dados de treinamento em treinamento e dev, totalizando 90/5/5
+    # X_test, X_dev, y_test, y_dev = train_test_split(X_test, y_test, test_size=0.5, random_state=42)
 
     # param_grid = {
     #     'learning_rate': [0.3, 0.2, 0.3],
@@ -135,13 +133,15 @@ def main() -> None:
     model.fit(X_train, y_train)
 
     # Evaluate train model
-    evaluate_model(model, X_train, y_train, "train")
+    train_accuracy = evaluate_model(model, X_train, y_train, "train")
+    wandb.log({"train accuracy": train_accuracy})
 
-    # Evaluate dev model
-    evaluate_model(model, X_dev, y_dev, "dev")
+    # # Evaluate dev model
+    # evaluate_model(model, X_dev, y_dev, "dev")
 
     # Evaluate test model
-    evaluate_model(model, X_test, y_test, "test")
+    test_accuracy = evaluate_model(model, X_test, y_test, "test")
+    wandb.log({"test accuracy": test_accuracy})
 
     y_pred = model.predict(X_test)
     y_probas = model.predict_proba(X_test)
@@ -170,6 +170,6 @@ def main() -> None:
     # artifact.add_file('xgboost_model.json')
     # wandb.log_artifact(artifact)
     
-    # wandb.finish()
+    wandb.finish()
 
 main()
