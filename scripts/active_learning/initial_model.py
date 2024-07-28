@@ -89,10 +89,6 @@ def main() -> None:
     # Dividir os dados em conjuntos de treino e teste
     X_train, X_test, y_train, y_test = train_test_split(X, targets_encoded, test_size=0.1, random_state=42)
 
-    # Instancia variável que contém o melhor modelo testado
-    best_model = XGBClassifier()
-    greater_accuracy = 0
-
     # Criar e treinar o modelo XGBoost
     logging.info('Train the XGBoost model')
     model = XGBClassifier(learning_rate=0.3,
@@ -110,24 +106,25 @@ def main() -> None:
     evaluate_model(model, X_train, y_train, "train model", label_encoder)
 
     # Evaluate test model
-    test_accuracy = evaluate_model(model, X_test, y_test, "test model", label_encoder)
-
-    # Verifica qual o melhor modelo com base na acurácia do modelo de teste
-    if (test_accuracy > greater_accuracy):
-        best_model = model
-        greater_accuracy = test_accuracy
+    evaluate_model(model, X_test, y_test, "test model", label_encoder)
 
     # Lê arquivos csv com os dados das notícias
     logging.info('Reading news')
-    df = pd.read_csv('../../data/news.csv')
+    all_news_df = pd.read_csv('../../data/news.csv')
+
+    # Retira as notícias que foram classificadas manualmente
+    filter_news_df = all_news_df[~all_news_df['content'].isin(df_combined['content'])]
+
+    # Drop duplicates
+    filter_news_df = filter_news_df.drop_duplicates(subset=['content'])
 
     # Combina colunas do dataframe
     logging.info('Combine columns')
-    df_full_combined = combine_columns(df, 'title', 'content', 'combined')
+    df_full_combined = combine_columns(filter_news_df, 'title', 'content', 'combined')
 
     # Classifica notícias
     logging.info('Classifies news')
-    confident_predictions = classify_new_texts(df_full_combined['combined'], best_model, vectorizer, label_encoder, 0.8)
+    confident_predictions = classify_new_texts(df_full_combined['combined'], model, vectorizer, label_encoder, 0.8)
 
     # Transforms data into dataframe
     df_confident_predictions = pd.DataFrame(confident_predictions, columns=['combined', 'target', 'probability'])
@@ -136,3 +133,5 @@ def main() -> None:
 
     # Save data as csv file
     df_confident_predictions.to_csv('../../data/all_classified_news.csv', index=False)
+
+main()

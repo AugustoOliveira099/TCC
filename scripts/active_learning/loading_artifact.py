@@ -109,5 +109,3 @@ def main() -> None:
                         description=description_text)
         
     interface.launch()
-
-main()
