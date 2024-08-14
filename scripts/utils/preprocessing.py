@@ -43,7 +43,7 @@ def remove_accents(text):
     text = ''.join([c for c in text if not unicodedata.combining(c)])
     return text
 
-def clean_text(text: str) -> str:
+def clean_text(text: str) -> list[str]:
     """
     Cleans the input text by performing several preprocessing steps.
 
@@ -51,7 +51,7 @@ def clean_text(text: str) -> str:
         text (str): The text to be cleaned.
 
     Returns:
-        str: The cleaned text.
+        list[str]: List of tokens.
     """
     text = text.lower()  # Convert to lowercase
     # text = text.translate(str.maketrans('', '', string.punctuation))  # Remover pontuação

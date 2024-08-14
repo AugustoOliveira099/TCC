@@ -31,34 +31,6 @@ def main() -> None:
     logging.info('Combine columns')
     df_combined = combine_columns(df, 'title', 'content', 'combined')
 
-
-
-
-    # # Agrupar os dados por destino
-    # grouped = df_combined.groupby('target')
-
-    # # Lista para armazenar os DataFrames de destino balanceados
-    # balanced_dfs = []
-
-    # # Quantidade de instâncias desejadas
-    # desired_count = 250
-
-    # # Para cada grupo, selecionar aleatoriamente as instâncias desejadas
-    # for target, group in grouped:
-    #     if len(group) >= desired_count:
-    #         balanced_dfs.append(group.sample(desired_count))
-    #     else:
-    #         balanced_dfs.append(group)
-
-    # # Concatenar os DataFrames de destino balanceados em um único DataFrame
-    # balanced_data = pd.concat(balanced_dfs)
-
-    # # Remover a coluna de índice resultante da concatenação
-    # balanced_data.reset_index(drop=True, inplace=True)
-
-
-
-
     # Separa os textos (features) e os targets
     texts = df_combined['combined']
     targets = df_combined['target']

@@ -19,10 +19,6 @@ def plot_frequency_of_tokens(df: pd.DataFrame, fig_path: str) -> None:
     # Create the histogram using the 'Token' column
     plt.hist(df['n_tokens'], bins=30, edgecolor='white')
 
-    # Add labels for x and y axes
-    plt.xlabel('Token Value')
-    plt.ylabel('Frequency')
-
     # Calculate the mean of the 'n_tokens' column
     mean_value = df['n_tokens'].mean()
 
@@ -30,13 +26,13 @@ def plot_frequency_of_tokens(df: pd.DataFrame, fig_path: str) -> None:
     plt.axvline(mean_value, color='blue',
                 linestyle='dashed',
                 linewidth=1,
-                label=f'Mean: {mean_value:.2f}')
+                label=f'Média: {mean_value:.2f}')
 
     # Find the maximum value of the x-axis
     max_x_value = df['n_tokens'].max()
 
     # Add an arrow pointing to the maximum x value
-    plt.annotate(f'Max: {max_x_value}',
+    plt.annotate(f'Máx.: {max_x_value}',
                  xy=(max_x_value, 0),
                  xycoords='data',
                  xytext=(max_x_value - 30, 25),

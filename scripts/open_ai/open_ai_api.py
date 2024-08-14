@@ -51,9 +51,9 @@ def main() -> None:
     cost = 0.00013 # Cost per 1000 tokens to the text-embedding-3-large model
     print(f"Estimated priced is U$ {(df_tokens.n_tokens.sum()/1000*cost)}.")
 
-    # Embed combined news
-    logging.info('Embed combined news (this may take about 3 hours)')
-    df_tokens["embedding"] = df_tokens['combined'].apply(lambda x: fetch_embedding(x, embedding_model))
+    # # Embed combined news
+    # logging.info('Embed combined news (this may take about 3 hours)')
+    # df_tokens["embedding"] = df_tokens['combined'].apply(lambda x: fetch_embedding(x, embedding_model))
 
-    # Export the output into a .csv file
-    df_tokens.to_csv("../../data/noticias_ufrn_embeddings.csv", index=False)
+    # # Export the output into a csv file
+    # df_tokens.to_csv("../../data/noticias_ufrn_embeddings.csv", index=False)
