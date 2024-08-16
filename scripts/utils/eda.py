@@ -17,13 +17,17 @@ def plot_frequency_of_tokens(df: pd.DataFrame, fig_path: str) -> None:
     plt.style.use('ggplot')
 
     # Create the histogram using the 'Token' column
-    plt.hist(df['n_tokens'], bins=30, edgecolor='white')
+    plt.hist(df['n_tokens'], bins=30, edgecolor='white', color='#629fca')
+
+    # Add labels for x and y axes
+    plt.xlabel('Quantidade de tokens por notícia')
+    plt.ylabel('Frequência')
 
     # Calculate the mean of the 'n_tokens' column
     mean_value = df['n_tokens'].mean()
 
     # Add a vertical line for the mean value
-    plt.axvline(mean_value, color='blue',
+    plt.axvline(mean_value, color='black',
                 linestyle='dashed',
                 linewidth=1,
                 label=f'Média: {mean_value:.2f}')

@@ -105,7 +105,7 @@ def main() -> None:
             random_state=config.random_state
         )
         clusters_pca = kmeans_pca.fit_predict(vis_dims_new)
-        df['cluster_with_pca'] = clusters_pca
+        df['cluster'] = clusters_pca
 
         # Calculando a Silhouette Score
         silhouette_pca = silhouette_score(vis_dims_new, clusters_pca, sample_size=2000)
@@ -145,11 +145,12 @@ def main() -> None:
 
     # Save the results into CSV file
     logging.info('Save data with clusters')
+    dataset_path = '../../../data/kmeans/noticias_pca.csv'
     df.drop(['title', 'content', 'n_tokens', 'target'], axis=1, inplace=True)
-    pca_df = pd.DataFrame(vis_dims_new, columns=['pca1', 'pca2'])
+    pca_df = pd.DataFrame(vis_dims_new, columns=['pca'])
     df = df.reset_index(drop=True)  # Reinicia os índices do DataFrame original
     df = pd.concat([df, pca_df], axis=1)
-    df.to_csv('../../../data/kmeans/noticias_pca.csv', index=False)
+    df.to_csv(dataset_path, index=False)
 
     # Visualize the KMeans clusters with t-SNE
     plt.figure(figsize=(12, 6))
@@ -181,14 +182,17 @@ def main() -> None:
     # Save image into Weights and Biases
     wandb.log({"Clusters with PCA": wandb.Image(image_path)})
 
-    # # Stop the carbon tracker
-    # emissions = tracker.stop()
-    # logging.info(f'carbon_emissions: {emissions}')
-
-    # # Log carbon emissons artifact
-    # artifact = wandb.Artifact(name="carbon_emissions", type="dataset")
-    # artifact.add_file('emissions.csv', name='emissions.csv')
-    # wandb.log_artifact(artifact)
+    # Save new dataset into Weights and Biases
+    logging.info('Saving dataset into Weights and Biases')
+    logged_artifact = run.log_artifact(
+        dataset_path,
+        name="dataset_kmeans_pca",
+        type="dataset"
+    )
+    run.link_artifact(
+        artifact=logged_artifact,
+        target_path="mlops2023-2-org/wandb-registry-dataset/dataset_kmeans_pca"
+    ) # Log and link the dataset to the Model Registry
 
     run.finish()
 

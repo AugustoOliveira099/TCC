@@ -44,12 +44,13 @@ def main() -> None:
 
     # Plota frequência de tokens no texto
     logging.info('Plot the token frequency')
-    fig_path = '../../images/histogram.png'
+    fig_path = '../../images/token_frequency.png'
     plot_frequency_of_tokens(df_tokens, fig_path)
 
     # Calculate the price of the OpenAI embedding
     cost = 0.00013 # Cost per 1000 tokens to the text-embedding-3-large model
-    print(f"Estimated priced is U$ {(df_tokens.n_tokens.sum()/1000*cost)}.")
+    num_tokens = df_tokens.n_tokens.sum()
+    print(f"There are {num_tokens} tokens. Estimated priced is U$ {(num_tokens/1000*cost)}.")
 
     # # Embed combined news
     # logging.info('Embed combined news (this may take about 3 hours)')
@@ -57,3 +58,5 @@ def main() -> None:
 
     # # Export the output into a csv file
     # df_tokens.to_csv("../../data/noticias_ufrn_embeddings.csv", index=False)
+
+main()

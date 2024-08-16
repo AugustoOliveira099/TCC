@@ -6,14 +6,16 @@ import wandb
 import joblib
 import seaborn as sns
 import matplotlib.pyplot as plt
-from codecarbon import track_emissions
 from dotenv import load_dotenv
+from wordcloud import WordCloud
+from scipy.sparse import save_npz
 from xgboost import XGBClassifier
-from sklearn.metrics import confusion_matrix, classification_report
+from codecarbon import track_emissions
 from sklearn.preprocessing import LabelEncoder
 from wandb.integration.xgboost import WandbCallback
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics import confusion_matrix, classification_report
 
 
 relative_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../'))
@@ -96,6 +98,19 @@ def main() -> None:
         processed_texts = processed_texts.apply(lambda x: ' '.join(x))
         processed_texts_test = processed_texts_test.apply(lambda x: ' '.join(x))
 
+        # Concatenando todos os textos em uma única string
+        todos_os_textos = " ".join(processed_texts)
+
+        # Gerando a nuvem de palavras
+        wordcloud = WordCloud(width=800, height=400, background_color='white').generate(todos_os_textos)
+
+        # Plotando a nuvem de palavras
+        plt.figure(figsize=(10, 5))
+        plt.imshow(wordcloud, interpolation='bilinear')
+        plt.axis('off')  # Remove os eixos
+        image_path = '../../images/wordcloud_xgboost.png'
+        plt.savefig(image_path)
+
         # Transforma os textos em vetores numéricos usando TF-IDF
         logging.info('Vectorize data')
         vectorizer = TfidfVectorizer()
@@ -108,6 +123,12 @@ def main() -> None:
         artifact = wandb.Artifact(name="tfidf_vectorizer", type="model")
         artifact.add_file(vectorizer_filename, name="tfidf_vectorizer.pkl")
         wandb.log_artifact(artifact)
+
+        # Save feature matrix
+        save_npz("tfidf_matrix.npz", X)
+        tfidf_matrix_artifact = wandb.Artifact(name="tfidf_matrix", type="dataset")
+        tfidf_matrix_artifact.add_file("tfidf_matrix.npz")
+        wandb.log_artifact(tfidf_matrix_artifact)
 
         # Data slipt fake
         logging.info('Data split')
@@ -196,8 +217,7 @@ def main() -> None:
     sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', xticklabels=categories, yticklabels=categories)
     plt.xlabel('Valores Previstos')
     plt.ylabel('Valores Reais')
-    plt.title('Confusion Matrix')
-    image_path = '../../images/heatmap_xgboost.png'
+    image_path = '../../images/confusion_matrix_xgboost.png'
     plt.savefig(image_path)
 
     # Logue o gráfico no W&B
@@ -208,7 +228,6 @@ def main() -> None:
     df_report = pd.DataFrame(report).transpose()
     plt.figure(figsize=(8, 6))
     sns.heatmap(df_report.iloc[:-1, :-1], annot=True, cmap="Blues")
-    plt.title('Classification Report')
     image_path = '../../images/report_xgboost.png'
     plt.savefig(image_path)
 

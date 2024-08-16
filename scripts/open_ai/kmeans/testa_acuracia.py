@@ -124,7 +124,7 @@ def main() -> None:
     sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', xticklabels=mapeamento, yticklabels=mapeamento)
     plt.xlabel('Valores Previstos')
     plt.ylabel('Valores Reais')
-    image_path = '../../../images/heatmap.png'
+    image_path = '../../../images/confusion_matrix_kmeans.png'
     plt.savefig(image_path)
 
     # Logue o gráfico no W&B

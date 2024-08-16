@@ -5,6 +5,8 @@ import logging
 import numpy as np
 import joblib
 import wandb
+import matplotlib.pyplot as plt
+from wordcloud import WordCloud
 from codecarbon import track_emissions
 from sklearn.metrics import silhouette_score
 from codecarbon import EmissionsTracker
@@ -47,10 +49,6 @@ def main() -> None:
     )
     config = wandb.config
 
-    # Inicializa o rastreador de emissões de carbono
-    # tracker = EmissionsTracker()
-    # tracker.start()
-
     logging.info('Read data')
     datafile_path = '../../../data/noticias_ufrn_embeddings.csv'
     df = pd.read_csv(datafile_path)
@@ -58,6 +56,19 @@ def main() -> None:
 
     # Exclui as notícias já classificadas manualmente
     df = df[~df['title'].isin(classified_news['title'])]
+
+    # Concatenando todos os textos em uma única string
+    todos_os_textos = " ".join(df['combined'])
+
+    # Gerando a nuvem de palavras
+    wordcloud = WordCloud(width=800, height=400, background_color='white').generate(todos_os_textos)
+
+    # Plotando a nuvem de palavras
+    plt.figure(figsize=(10, 5))
+    plt.imshow(wordcloud, interpolation='bilinear')
+    plt.axis('off')  # Remove os eixos
+    image_path = '../../../images/wordcloud_kmeans.png'
+    plt.savefig(image_path)\
 
     @track_emissions(save_to_api=True)
     def preprocessing_train_model():
@@ -89,7 +100,7 @@ def main() -> None:
             random_state=config.random_state,
         )
         kmeans.fit(matrix_scaled)
-        df['cluster_without_tsne'] = kmeans.labels_
+        df['cluster'] = kmeans.labels_
 
         # Save KMeans model in Weights and Biases
         logging.info('Saving KMeans model')
@@ -112,7 +123,7 @@ def main() -> None:
 
     preprocessing_train_model()
 
-    # Save emssions into Weights and Biases
+    # Save emissions into Weights and Biases
     logging.info('Saving carbon emissions')
     emissions_path = './emissions.csv'
     logged_artifact = run.log_artifact(
@@ -127,17 +138,21 @@ def main() -> None:
 
     # Save the results into CSV file
     logging.info('Save data with clusters')
+    dataset_path = '../../../data/kmeans/noticias_kmeans.csv'
     df.drop(['title', 'content', 'n_tokens', 'target'], axis=1, inplace=True)
-    df.to_csv('../../../data/kmeans/noticias_kmeans.csv', index=False)
+    df.to_csv(dataset_path, index=False)
 
-    # # Stop the carbon tracker
-    # emissions = tracker.stop()
-    # logging.info(f'carbon_emissions: {emissions}')
-
-    # # Log carbon emissons artifact
-    # artifact = wandb.Artifact(name="carbon_emissions", type="dataset")
-    # artifact.add_file('emissions.csv', name='emissions.csv')
-    # wandb.log_artifact(artifact)
+    # Save new dataset into Weights and Biases
+    logging.info('Saving dataset into Weights and Biases')
+    logged_artifact = run.log_artifact(
+        dataset_path,
+        name="dataset_kmeans",
+        type="dataset"
+    )
+    run.link_artifact(
+        artifact=logged_artifact,
+        target_path="mlops2023-2-org/wandb-registry-dataset/dataset_kmeans"
+    ) # Log and link the dataset to the Model Registry
 
     run.finish()
 

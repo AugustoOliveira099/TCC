@@ -30,6 +30,6 @@ dependencias = ["pandas",
 for dependencia in dependencias:
     try:
         versao = pkg_resources.get_distribution(dependencia).version
-        print(f'{dependencia}: {versao}')
+        print(f'{dependencia}=={versao}')
     except pkg_resources.DistributionNotFound:
         print(f'{dependencia}: não instalada')
