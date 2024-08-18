@@ -91,7 +91,7 @@ def main() -> None:
                         colsample_bytree=0.7,
                         eval_metric='mlogloss',
                         random_state=42)
-    model = XGBClassifier(eval_metric='mlogloss', random_state=42)
+    # model = XGBClassifier(eval_metric='mlogloss', random_state=42)
     model.fit(X_train, y_train)
 
     # Evaluate train model
@@ -144,23 +144,23 @@ def main() -> None:
 
     print(df_confident_predictions['target'].value_counts())
 
-    # Save data as csv file
-    dataset_path = '../../data/all_classified_news.csv'
-    df_confident_predictions.to_csv(dataset_path, index=False)
+    # # Save data as csv file
+    # dataset_path = '../../data/all_classified_news.csv'
+    # df_confident_predictions.to_csv(dataset_path, index=False)
 
-    # Save new dataset into Weights and Biases
-    run = wandb.init()
-    logging.info('Saving dataset into Weights and Biases')
-    logged_artifact = run.log_artifact(
-        dataset_path,
-        name="dataset_xgboost",
-        type="dataset"
-    )
-    run.link_artifact(
-        artifact=logged_artifact,
-        target_path="mlops2023-2-org/wandb-registry-dataset/dataset_xgboost"
-    ) # Log and link the dataset to the Model Registry
+    # # Save new dataset into Weights and Biases
+    # run = wandb.init()
+    # logging.info('Saving dataset into Weights and Biases')
+    # logged_artifact = run.log_artifact(
+    #     dataset_path,
+    #     name="dataset_xgboost",
+    #     type="dataset"
+    # )
+    # run.link_artifact(
+    #     artifact=logged_artifact,
+    #     target_path="mlops2023-2-org/wandb-registry-dataset/dataset_xgboost"
+    # ) # Log and link the dataset to the Model Registry
 
-    # Mark the run as finished
-    wandb.finish()
+    # # Mark the run as finished
+    # wandb.finish()
 main()
