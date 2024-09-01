@@ -8,8 +8,8 @@ scripts/open_ai/artifacts/
 
 scripts/open_ai/flagged/
 
-scripts/active_learning/wandb/
+scripts/xgboost/wandb/
 
-scripts/active_learning/artifacts/
+scripts/xgboost/artifacts/
 
-scripts/active_learning/flagged/
+scripts/xgboost/flagged/

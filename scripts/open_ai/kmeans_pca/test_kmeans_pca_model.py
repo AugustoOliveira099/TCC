@@ -24,7 +24,7 @@ load_dotenv()
 # Load Weigth and Biases API key
 WANDB_API_KEY = os.getenv('WANDB_API_KEY')
 
-def main() -> None:
+def test_model() -> None:
     # Set number of clusters
     n_clusters = 4
 
@@ -173,5 +173,3 @@ def main() -> None:
 
     # Finalizar a run
     wandb.finish()
-
-main()

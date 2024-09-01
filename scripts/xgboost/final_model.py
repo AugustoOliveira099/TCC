@@ -38,7 +38,7 @@ WANDB_API_KEY = os.getenv('WANDB_API_KEY')
 # Com level logging.INFO, também é englobado o level logging.ERROR
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 
-def build_final_model() -> None:
+def train_model() -> None:
     # Login into wandb
     wandb.login(key=WANDB_API_KEY)
 

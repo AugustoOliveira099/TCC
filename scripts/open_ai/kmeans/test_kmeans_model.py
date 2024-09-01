@@ -24,7 +24,7 @@ load_dotenv()
 # Load Weigth and Biases API key
 WANDB_API_KEY = os.getenv('WANDB_API_KEY')
 
-def main() -> None:
+def test_model() -> None:
     # Start a run, tracking hyperparameters
     wandb.login(key=WANDB_API_KEY)
     run = wandb.init(
@@ -148,5 +148,3 @@ def main() -> None:
 
     # Finalizar a run
     wandb.finish()
-
-main()

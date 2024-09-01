@@ -40,15 +40,15 @@ def names_clusters(cluster_column):
             {"role": "user", "content": f'Entre os temas "Informes", "Ciências", "Eventos" e "Vagas", qual deles as notícias abaixo tem em comum?\n\nNotícias:\n"""\n{reviews}\n"""\n\nTema:'}
         ]
 
-        # response = client.chat.completions.create(
-        #     model="gpt-4o",
-        #     messages=messages,
-        #     temperature=0,
-        #     max_tokens=64,
-        #     top_p=1,
-        #     frequency_penalty=0,
-        #     presence_penalty=0)
-        # print(response.choices[0].message.content.replace("\n", ""))
+        response = client.chat.completions.create(
+            model="gpt-4o",
+            messages=messages,
+            temperature=0,
+            max_tokens=64,
+            top_p=1,
+            frequency_penalty=0,
+            presence_penalty=0)
+        print(response.choices[0].message.content.replace("\n", ""))
 
         sample_cluster_rows = clusters_df[clusters_df[cluster_column] == i].sample(news_per_cluster)
         for j in range(news_per_cluster):

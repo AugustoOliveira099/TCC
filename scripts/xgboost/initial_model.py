@@ -34,7 +34,7 @@ WANDB_API_KEY = os.getenv('WANDB_API_KEY')
 # Com level logging.INFO, também é englobado o level logging.ERROR
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 
-def build_initial_model() -> None:
+def train_model() -> None:
     logging.info('Read data')
     datafile_path = '../../data/classified_news.csv'
     df = pd.read_csv(datafile_path)

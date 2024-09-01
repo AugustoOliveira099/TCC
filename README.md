@@ -46,12 +46,14 @@ docker exec -it tcc_container /bin/bash
 Com isso, é possível interagir com o código presente no container e todas as mudanças feitas nele serão refletidas localmente, e vice-versa.
 
 
-## Download dos arquivos
+## Download dos conjunts de dados
 Para versionar os arquivos CSV com os dados necessários para o desenvolvimento dos modelos, foi utilizado o [DVC](https://dvc.org/) em conjunto com uma conta do Google Drive. Para fazer o download dos dados necessários para treinar os modelos, basta executar o comando a seguir:
 
 ```
 dvc pull
 ```
+
+Será solicitado login com sua conta do Google para ter acesso aos arquivos presentes no Google Drive. Após isso, o download é iniciado de maneira automática.
 
 
 ## Executando o código

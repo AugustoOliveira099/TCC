@@ -26,7 +26,7 @@ load_dotenv()
 # Load Weigth and Biases API key
 WANDB_API_KEY = os.getenv('WANDB_API_KEY')
 
-def main() -> None:
+def train_model() -> None:
     # Set number of clusters
     n_clusters = 4
 
@@ -195,5 +195,3 @@ def main() -> None:
     ) # Log and link the dataset to the Model Registry
 
     run.finish()
-
-main()
