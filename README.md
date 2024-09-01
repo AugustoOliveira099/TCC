@@ -46,7 +46,7 @@ docker exec -it tcc_container /bin/bash
 Com isso, é possível interagir com o código presente no container e todas as mudanças feitas nele serão refletidas localmente, e vice-versa.
 
 
-## Download dos conjunts de dados
+## Download dos conjuntos de dados
 Para versionar os arquivos CSV com os dados necessários para o desenvolvimento dos modelos, foi utilizado o [DVC](https://dvc.org/) em conjunto com uma conta do Google Drive. Para fazer o download dos dados necessários para treinar os modelos, basta executar o comando a seguir:
 
 ```
@@ -57,16 +57,26 @@ Será solicitado login com sua conta do Google para ter acesso aos arquivos pres
 
 
 ## Executando o código
-Visando a facilidade da execução, cada modelo possui um comando para ser treinado.
+Visando a facilidade da execução, cada modelo possui um comando para ser treinado. Primeiro é necessário acessar a pasta de ``script`` do projeto, para que em seguida seja possível escolher quais modelos treinar.
+
+```
+cd scripts
+```
 
 Para treinar o modelo XGBoost:
-``````
+```
+python3 xgboost_train
+```
 
 Para treinar o modelo K-Means:
-``````
+```
+python3 kmeans_train
+```
 
 Para treinar o modelo K-Means com redução de dimensionalidade:
-``````
+```
+python3 kmeans_pca_train
+```
 
 
 
