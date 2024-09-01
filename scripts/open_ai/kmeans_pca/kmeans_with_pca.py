@@ -47,10 +47,6 @@ def train_model() -> None:
     )
     config = wandb.config
 
-    # # Inicialize o rastreador de emissões de carbono
-    # tracker = EmissionsTracker()
-    # tracker.start()
-
     logging.info('Read data')
     datafile_path = '../../../data/noticias_ufrn_embeddings.csv'
     df = pd.read_csv(datafile_path)
@@ -145,7 +141,7 @@ def train_model() -> None:
 
     # Save the results into CSV file
     logging.info('Save data with clusters')
-    dataset_path = '../../../data/kmeans/noticias_pca.csv'
+    dataset_path = '../../../data/kmeans/noticias_kmeans_pca.csv'
     df.drop(['title', 'content', 'n_tokens', 'target'], axis=1, inplace=True)
     pca_df = pd.DataFrame(vis_dims_new, columns=['pca'])
     df = df.reset_index(drop=True)  # Reinicia os índices do DataFrame original

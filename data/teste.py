@@ -120,7 +120,7 @@ plt.savefig(image_path)
 
 # df = pd.read_csv("noticias_ufrn_embeddings.csv")
 # df1 = pd.read_csv("classified_news.csv")
-# df2 = pd.read_csv("noticias_xgboost.csv")
+# df2 = pd.read_csv("xgboost/noticias_xgboost.csv")
 # df3 = pd.read_csv("news.csv")
 
 # print(df.shape)

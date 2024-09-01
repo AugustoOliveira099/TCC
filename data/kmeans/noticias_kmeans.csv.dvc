@@ -1,0 +1,5 @@
+outs:
+- md5: ed03808d021ae469019bf7598b261624
+  size: 1452388540
+  hash: md5
+  path: noticias_kmeans.csv

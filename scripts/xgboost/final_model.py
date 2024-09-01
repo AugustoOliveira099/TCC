@@ -62,7 +62,7 @@ def train_model() -> None:
     config = wandb.config
 
     logging.info('Read data')
-    datafile_path = '../../data/noticias_xgboost.csv'
+    datafile_path = '../../data/xgboost/noticias_xgboost.csv'
     df = pd.read_csv(datafile_path)
 
     classified_news = pd.read_csv('../../data/classified_news.csv')

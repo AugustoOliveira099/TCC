@@ -1,0 +1,5 @@
+outs:
+- md5: cb54057b3525c076991435119170ba03
+  size: 1453163795
+  hash: md5
+  path: noticias_kmeans_pca.csv

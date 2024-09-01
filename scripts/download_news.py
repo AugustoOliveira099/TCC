@@ -97,4 +97,4 @@ if __name__ == '__main__':
     data = get_news()
 
     # Salva as notícias em um arquivo CSV
-    create_csv_file(data, 'data/raw_news.csv')
+    create_csv_file(data, 'data/news.csv')

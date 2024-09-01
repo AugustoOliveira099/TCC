@@ -152,7 +152,7 @@ def train_model() -> None:
     print(df_confident_predictions['target'].value_counts())
 
     # Save data as csv file
-    dataset_path = '../../data/noticias_xgboost.csv'
+    dataset_path = '../../data/xgboost/noticias_xgboost.csv'
     df_confident_predictions.to_csv(dataset_path, index=False)
 
     # Save new dataset into Weights and Biases
