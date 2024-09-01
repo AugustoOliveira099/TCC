@@ -22,18 +22,18 @@ Ademais, é necessário criar registros de modelos e conjunto de dados no Weight
 Para iniciar o ambiente com Docker, basta executar os comandos a seguir na raiz do projeto.
 
 Contrói a imagem:
-```docker build -t tcc_image .```
+````docker build -t tcc_image .````
 
 Cria o conatainer:
-```docker-compose up```
+````docker-compose up````
 
 Exibe a lista de de containers:
-```docker ps```
+````docker ps````
 
 Na lista que irá aparecer, é necessário observar se existe container com o nome de ``tcc_container``, caso exista, está tudo certo e é possível ir para o passo seguinte.
 
 Acessa o terminal interativo do container criado:
-```docker exec -it tcc_container /bin/bash```
+````docker exec -it tcc_container /bin/bash````
 
 Com isso, é possível interagir com o código presente no container e todas as mudanças feitas nele serão refletidas localmente, e vice-versa.
 
@@ -41,20 +41,20 @@ Com isso, é possível interagir com o código presente no container e todas as 
 ## Download dos arquivos
 Para versionar os arquivos CSV com os dados necessários para o desenvolvimento dos modelos, foi utilizado o [DVC](https://dvc.org/) em conjunto com uma conta do Google Drive. Para fazer o download dos dados necessários para treinar os modelos, basta executar o comando a seguir:
 
-```dvc pull```
+````dvc pull````
 
 
 ## Executando o código
 Visando a facilidade da execução, cada modelo possui um comando para ser treinado.
 
 Para treinar o modelo XGBoost:
-``````
+````ls````
 
 Para treinar o modelo K-Means:
-``````
+````ls````
 
 Para treinar o modelo K-Means com redução de dimensionalidade:
-``````
+````ls````
 
 
 
