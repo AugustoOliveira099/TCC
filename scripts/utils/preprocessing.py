@@ -10,6 +10,9 @@ import logging
 nltk.download('stopwords')
 nltk.download('punkt')
 
+# Baixa o pacote em português para lematização
+spacy.cli.download("pt_core_news_sm")
+
 def remove_html(text: str) -> str:
     """
     Remove html from a given text.

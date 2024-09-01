@@ -1,0 +1,10 @@
+version: '3'
+services:
+  app:
+    image: tcc_image
+    container_name: tcc_container
+    volumes:
+      - ./:/app
+    command: /bin/bash
+    stdin_open: true
+    tty: true

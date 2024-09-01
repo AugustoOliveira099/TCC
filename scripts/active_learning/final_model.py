@@ -38,7 +38,7 @@ WANDB_API_KEY = os.getenv('WANDB_API_KEY')
 # Com level logging.INFO, também é englobado o level logging.ERROR
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 
-def main() -> None:
+def build_final_model() -> None:
     # Login into wandb
     wandb.login(key=WANDB_API_KEY)
 
@@ -62,7 +62,7 @@ def main() -> None:
     config = wandb.config
 
     logging.info('Read data')
-    datafile_path = '../../data/all_classified_news.csv'
+    datafile_path = '../../data/noticias_xgboost.csv'
     df = pd.read_csv(datafile_path)
 
     classified_news = pd.read_csv('../../data/classified_news.csv')
@@ -130,12 +130,12 @@ def main() -> None:
         tfidf_matrix_artifact.add_file("tfidf_matrix.npz")
         wandb.log_artifact(tfidf_matrix_artifact)
 
-        # Data slipt fake
-        logging.info('Data split')
-        X_train, X_test, y_train, y_test = [X, X_test, targets_encoded, targets_encoded_test]
+        # # Data slipt fake
+        # logging.info('Data split')
+        # X_train, X_test, y_train, y_test = [X, X_test, targets_encoded, targets_encoded_test]
 
-        # # Data split
-        # X_train, X_test, y_train, y_test = train_test_split(X, targets_encoded, test_size=0.1, random_state=42)
+        # Data split
+        X_train, X_teste, y_train, y_test = train_test_split(X, targets_encoded, test_size=0.1, random_state=42)
 
         # Criar e treinar o modelo XGBoost
         logging.info('Train the XGBoost model')
@@ -168,9 +168,10 @@ def main() -> None:
             target_path="mlops2023-2-org/wandb-registry-model/xgboost"
         ) # Log and link the model to the Model Registry
 
-        return model, X_train, X_test, y_train, y_test
+        return model, X_train, X_teste, y_train, y_test
     
-    model, X_train, X_test, y_train, y_test = preprocessing_train_model()
+    # Train the model
+    model, X_train, X_teste, y_train, y_test = preprocessing_train_model()
 
     # Save emssions into Weights and Biases
     logging.info('Saving carbon emissions')
@@ -190,22 +191,22 @@ def main() -> None:
     wandb.log({"train accuracy": train_accuracy})
 
     # Evaluate test model
-    test_accuracy = evaluate_model(model, X_test, y_test, "test model", label_encoder)
+    test_accuracy = evaluate_model(model, X_teste, y_test, "test model", label_encoder)
     wandb.log({"test accuracy": test_accuracy})
 
-    y_pred = model.predict(X_test)
-    y_probas = model.predict_proba(X_test)
+    y_pred = model.predict(X_teste)
+    y_probas = model.predict_proba(X_teste)
 
     wandb.sklearn.plot_classifier(
         model,
         X_train,
-        X_test,
+        X_teste,
         y_train,
         y_test,
         y_pred,
         y_probas,
         label_encoder.classes_,
-        model_name=f"active_learning_model",
+        model_name=f"xgboost_model",
         feature_names=None,
     )
 
@@ -217,7 +218,7 @@ def main() -> None:
     sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', xticklabels=categories, yticklabels=categories)
     plt.xlabel('Valores Previstos')
     plt.ylabel('Valores Reais')
-    image_path = '../../images/confusion_matrix_xgboost.png'
+    image_path = '../../images/confusion_matrix_xgboost_teste.png'
     plt.savefig(image_path)
 
     # Logue o gráfico no W&B
@@ -225,10 +226,14 @@ def main() -> None:
 
     # Calculate the classification report
     report = classification_report(y_test, y_pred, target_names=categories, output_dict=True)
+    print(report.keys())
+    del report['macro avg']
+    del report['accuracy']
+    del report['weighted avg']
     df_report = pd.DataFrame(report).transpose()
     plt.figure(figsize=(8, 6))
     sns.heatmap(df_report.iloc[:-1, :-1], annot=True, cmap="Blues")
-    image_path = '../../images/report_xgboost.png'
+    image_path = '../../images/report_xgboost_teste.png'
     plt.savefig(image_path)
 
     # Logue o gráfico no W&B
@@ -236,5 +241,3 @@ def main() -> None:
 
     # Mark the run as finished
     wandb.finish()
-
-main()

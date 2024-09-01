@@ -43,33 +43,33 @@ import seaborn as sns
 
 
 # # XGBoost inicial
-report = {
-    'Ciências': {
-        'Precisão': 0.75,
-        'Recall': 0.71,
-        'F1-score': 0.73
-    },
-    'Eventos': {
-        'Precisão': 0.87,
-        'Recall': 0.74,
-        'F1-score': 0.80
-    },
-    'Informes': {
-        'Precisão': 0.68,
-        'Recall': 0.81,
-        'F1-score': 0.74
-    },
-    'Vagas': {
-        'Precisão': 0.92,
-        'Recall': 0.85,
-        'F1-score': 0.88
-    },
-    'Acurácia': {
-        'Precisão': 0.78,
-        'Recall': 0.78,
-        'F1-score': 0.78
-    },
-}
+# report = {
+#     'Ciências': {
+#         'Precisão': 0.75,
+#         'Recall': 0.71,
+#         'F1-score': 0.73
+#     },
+#     'Eventos': {
+#         'Precisão': 0.87,
+#         'Recall': 0.74,
+#         'F1-score': 0.80
+#     },
+#     'Informes': {
+#         'Precisão': 0.68,
+#         'Recall': 0.81,
+#         'F1-score': 0.74
+#     },
+#     'Vagas': {
+#         'Precisão': 0.92,
+#         'Recall': 0.85,
+#         'F1-score': 0.88
+#     },
+#     # 'Acurácia': {
+#     #     'Precisão': 0.78,
+#     #     'Recall': 0.78,
+#     #     'F1-score': 0.78
+#     # },
+# }
 
 
 # # XGBoost Final
@@ -101,23 +101,31 @@ report = {
 #     }
 # }
 
+report = {
+    "Ciências": {"Precisão": 0.96, "Recall": 0.94, "F1-score": 0.95},
+    "Eventos": {"Precisão": 0.96, "Recall": 0.98, "F1-score": 0.97},
+    "Informes": {"Precisão": 0.98, "Recall": 0.98, "F1-score": 0.98},
+    "Vagas": {"Precisão": 0.99, "Recall": 0.99, "F1-score": 0.99},
+}
+
+
 
 # Calculate the classification report
 df_report = pd.DataFrame(report).transpose()
 plt.figure(figsize=(8, 6))
 sns.heatmap(df_report, annot=True, cmap="Blues")
-image_path = '../images/report_xgboost_inicial.png'
+image_path = '../images/report_xgboost_teste.png'
 plt.savefig(image_path)
 
 
 # df = pd.read_csv("noticias_ufrn_embeddings.csv")
 # df1 = pd.read_csv("classified_news.csv")
-df2 = pd.read_csv("all_classified_news.csv")
+# df2 = pd.read_csv("noticias_xgboost.csv")
 # df3 = pd.read_csv("news.csv")
 
 # print(df.shape)
 # print(df1.shape)
-print(df2.shape)
+# print(df2.shape)
 # print(df3.shape)
 
 # # Plotar o histograma

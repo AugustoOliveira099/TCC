@@ -5,6 +5,7 @@ import os
 import seaborn as sns
 import matplotlib.pyplot as plt
 import wandb
+from dotenv import load_dotenv
 from wordcloud import WordCloud
 from sklearn.preprocessing import LabelEncoder
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -23,11 +24,17 @@ from utils.preprocessing import lemmatize, \
                                 clean_text, \
                                 combine_columns
 
+# Carregar variáveis de ambiente do arquivo .env
+load_dotenv()
+
+# Load Weigth and Biases API key
+WANDB_API_KEY = os.getenv('WANDB_API_KEY')
+
 # Configuração inicial do logging
 # Com level logging.INFO, também é englobado o level logging.ERROR
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 
-def main() -> None:
+def build_initial_model() -> None:
     logging.info('Read data')
     datafile_path = '../../data/classified_news.csv'
     df = pd.read_csv(datafile_path)
@@ -83,15 +90,15 @@ def main() -> None:
 
     # Criar e treinar o modelo XGBoost
     logging.info('Train the XGBoost model')
-    model = XGBClassifier(learning_rate=0.3,
-                        max_depth=7,
-                        reg_alpha=15,
-                        reg_lambda=15,
-                        subsample=0.5,
-                        colsample_bytree=0.7,
-                        eval_metric='mlogloss',
-                        random_state=42)
-    # model = XGBClassifier(eval_metric='mlogloss', random_state=42)
+    # model = XGBClassifier(learning_rate=0.3,
+    #                     max_depth=7,
+    #                     reg_alpha=15,
+    #                     reg_lambda=15,
+    #                     subsample=0.5,
+    #                     colsample_bytree=0.7,
+    #                     eval_metric='mlogloss',
+    #                     random_state=42)
+    model = XGBClassifier(eval_metric='mlogloss', random_state=42)
     model.fit(X_train, y_train)
 
     # Evaluate train model
@@ -144,23 +151,23 @@ def main() -> None:
 
     print(df_confident_predictions['target'].value_counts())
 
-    # # Save data as csv file
-    # dataset_path = '../../data/all_classified_news.csv'
-    # df_confident_predictions.to_csv(dataset_path, index=False)
+    # Save data as csv file
+    dataset_path = '../../data/noticias_xgboost.csv'
+    df_confident_predictions.to_csv(dataset_path, index=False)
 
-    # # Save new dataset into Weights and Biases
-    # run = wandb.init()
-    # logging.info('Saving dataset into Weights and Biases')
-    # logged_artifact = run.log_artifact(
-    #     dataset_path,
-    #     name="dataset_xgboost",
-    #     type="dataset"
-    # )
-    # run.link_artifact(
-    #     artifact=logged_artifact,
-    #     target_path="mlops2023-2-org/wandb-registry-dataset/dataset_xgboost"
-    # ) # Log and link the dataset to the Model Registry
+    # Save new dataset into Weights and Biases
+    wandb.login(key=WANDB_API_KEY)
+    run = wandb.init(project='push_noticias_xgboost')
+    logging.info('Saving dataset into Weights and Biases')
+    logged_artifact = run.log_artifact(
+        dataset_path,
+        name="dataset_xgboost",
+        type="dataset"
+    )
+    run.link_artifact(
+        artifact=logged_artifact,
+        target_path="mlops2023-2-org/wandb-registry-dataset/dataset_xgboost"
+    ) # Log and link the dataset to the Model Registry
 
-    # # Mark the run as finished
-    # wandb.finish()
-main()
+    # Mark the run as finished
+    wandb.finish()
