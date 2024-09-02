@@ -1,104 +1,92 @@
-# Trabalho de Conclusão de Curso (TCC)
-Este é o Trabalho de Conlusão de Curso para o curso Bacharelado em Engenharia de Computação, oferecido pela Universidade Federal do Rio Grande do Norte (UFRN). Ele está inserido no tema de Inteligência Artificial (IA) e trata a respeito do Processamento de Linguagem Natural (PLN) no contexto de classificação de notícias. 
+# Final Project (TCC)
 
-Todos os dias úteis são cadastradas notícias no [Portal da UFRN](https://www.ufrn.br/). Atualmente, existem mais de 22 mil notícias disponíveis. Tendo-se isso em vista, em conversa com a Agência de Comunicação da UFRN (AGECOM), foi informado que as notícias se dividem em quatro temas diferentes: ciências, eventos, vagas e informes.
+This is the Final Project for the Bachelor's degree in Computer Engineering, offered by the Federal University of Rio Grande do Norte (UFRN). It falls under the theme of Artificial Intelligence (AI) and focuses on Natural Language Processing (NLP) in the context of news classification.
 
-Desse modo, o intuito deste trabalho é apresentar três abordagens diferentes para a classificação automática dos textos. São três modelos de aprendizado de máquina: XGBoost, K-Means e K-Means com a adição da redução de dimensionalidade.
+Every business day, news is registered on the [UFRN Portal](https://www.ufrn.br/). Currently, there are more than 22,000 news articles available. With this in mind, in discussions with the UFRN Communication Agency (AGECOM), it was informed that the news is divided into four different categories: sciences, events, job openings, and announcements.
 
-Este é o código utilizado para o treinamento dos modelos, e a seguir estará exposto como é possível replicar os modelos criados no TCC em questão.
+Thus, the purpose of this project is to present three different approaches for automatic text classification. These include three machine learning models: XGBoost, K-Means, and K-Means with dimensionality reduction.
 
-
-## Pré-requisitos
-É necessário ter o [Docker](https://www.docker.com/) instalado. Contas no [Weights & Biases](https://wandb.ai/site), [Google Drive](https://www.google.com/intl/pt-br/drive/about.html) e [OpenAI](https://platform.openai.com/docs/overview). 
-
-Nesta última plataforma, é apenas necessário criar uma conta caso queira utilizar o modelo de embeddings da OpenAI. Os passos aqui elucidados não utilizam, uma vez que é um processo custoso em tempo (cerca de 3 horas) e em dinheiro (em torno de U$ 1,50), além de não ser necessário, pois as notícias disponíveis já possuem suas representações vetoriais salvas em formato CSV. 
-
-É necessário configurar duas variáveis de ambiente relacionadas às contas criadas. Crie o arquivo ``.env`` com o mesmo conteúdo presente em ``.env.example``, adicionando os valores para as variáveis ``WANDB_API_KEY``, encontrada em [https://wandb.ai/authorize](https://wandb.ai/authorize), e ``OPENAI_API_KEY``, presente em [https://platform.openai.com/api-keys](https://platform.openai.com/api-keys), caso queira utilizar a API da OpenAI.
-
-Ademais, é necessário criar registros de modelos e conjunto de dados no Weights & Biases para que o código funcione adequadamente. Os registros de modelos que precisam ser criados devem ter os seguintes nomes: ``xgboost``, ``kmeans`` e ``kmeans-pca``. Já os conjuntos de dados devem ser: ``dataset_xgboost``, ``emissions_xgboost``, ``dataset_kmeans``, ``emissions_kmeans``, ``dataset_kmeans_pca`` e ``emissions_kmeans_pca``.
+This is the code used to train the models, and below it is explained how to replicate the models created in this project.
 
 
-## Iniciando o ambiente
-Para iniciar o ambiente com Docker, basta executar os comandos a seguir na raiz do projeto.
+## Prerequisites
+You need to have [Docker](https://www.docker.com/) installed. You also need accounts on [Weights & Biases](https://wandb.ai/site), [Google Drive](https://www.google.com/intl/en/drive/about.html), and [OpenAI](https://platform.openai.com/docs/overview).
 
-Contrói a imagem:
+On the last platform, creating an account is only necessary if you want to use the OpenAI embeddings model. The steps outlined here do not require this, as it is a time-consuming process (about 3 hours) and costly (around $1.50), and it is not necessary because the available news already has its vector representations saved in CSV format.
+
+You need to configure two environment variables related to the created accounts. Create the `.env` file with the same content as `.env.example`, adding the values for the `WANDB_API_KEY`, found at [https://wandb.ai/authorize](https://wandb.ai/authorize), and `OPENAI_API_KEY`, found at [https://platform.openai.com/api-keys](https://platform.openai.com/api-keys), if you want to use the OpenAI API.
+
+Additionally, you need to create model and dataset records on Weights & Biases for the code to work properly. The model records that need to be created should be named: `xgboost`, `kmeans`, and `kmeans-pca`. The datasets should be: `dataset_xgboost`, `emissions_xgboost`, `dataset_kmeans`, `emissions_kmeans`, `dataset_kmeans_pca`, and `emissions_kmeans_pca`.
+
+
+## Starting the Environment
+To start the environment with Docker, run the following commands in the root directory of the project.
+
+Build the image:
 ```
 docker build -t tcc_image .
 ```
 
-Cria o conatainer:
+Create the container:
 ```
 docker-compose up
 ```
 
-Exibe a lista de de containers:
+List the containers:
 ```
 docker ps
 ```
 
-Na lista que irá aparecer, é necessário observar se existe container com o nome de ``tcc_container``, caso exista, está tudo certo e é possível ir para o passo seguinte.
+In the list that appears, check if there is a container named `tcc_container`. If it exists, everything is set, and you can proceed to the next step.
 
-Acessa o terminal interativo do container criado:
+Access the interactive terminal of the created container:
 ```
 docker exec -it tcc_container /bin/bash
 ```
 
-Com isso, é possível interagir com o código presente no container e todas as mudanças feitas nele serão refletidas localmente, e vice-versa.
+This allows you to interact with the code inside the container, and all changes made will be reflected locally, and vice versa.
 
 
-## Download dos conjuntos de dados
-Para versionar os arquivos CSV com os dados necessários para o desenvolvimento dos modelos, foi utilizado o [DVC](https://dvc.org/) em conjunto com uma conta do Google Drive. 
+## Downloading the Datasets
+To version the CSV files with the data needed for model development, [DVC](https://dvc.org/) was used in conjunction with a Google Drive account.
 
-Todavia, com base em testes, o Google está bloqueando o DVC para contas que não sejam donas da pasta que contém os metadados dos arquivos. Sendo assim, foram colocados os arquivos de fato em uma pasta do Google Drive. Para baixar os arquivos no projeto basta executar o comando a seguir:
+However, based on testing, Google is blocking DVC for accounts that do not own the folder containing the file metadata. Thus, the files were placed in a Google Drive folder. To download the files to the project, run the following command:
 
 ```
 gdown --folder https://drive.google.com/drive/folders/15a9iCeUTLCpUcj1a-HLFmVTQP1cx0uf- -O data
 ```
 
 
-## Executando o código
-Visando a facilidade da execução, cada modelo possui um comando para ser treinado. Primeiro é necessário acessar a pasta de ``script`` do projeto, para que em seguida seja possível escolher quais modelos treinar.
+## Running the Code
+For ease of execution, each model has a command to train it. First, navigate to the `scripts` folder of the project, then choose which models to train.
 
 ```
 cd scripts
 ```
 
-Para treinar o modelo XGBoost:
+To train the XGBoost model:
 ```
 python3 xgboost_train
 ```
 
-Para treinar o modelo K-Means:
+To train the K-Means model:
 ```
 python3 kmeans_train
 ```
 
-Para treinar o modelo K-Means com redução de dimensionalidade:
+To train the K-Means model with dimensionality reduction:
 ```
 python3 kmeans_pca_train
 ```
 
 
+## Model Interaction Environments
+Three interaction environments were built, one for each proposed model. To replicate them, follow all the previous steps, then clone the following repositories and configure the necessary environment variables.
 
+Note: For models using the K-Means algorithm, an OpenAI account with credits is required, as the models use the platform's API to generate embeddings.
 
+- The K-Means model interaction environment is available at this [link](https://huggingface.co/spaces/AugustoOliveira099/kmeans). Environment variables to be defined: `WANDB_API_KEY` and `OPENAI_API_KEY`.
 
-- Inicia um projeto dvc
-```
-dvc init
-```
+- The K-Means model interaction environment with dimensionality reduction is available at this [link](https://huggingface.co/spaces/AugustoOliveira099/kmeans-pca). Environment variables to be defined: `WANDB_API_KEY` and `OPENAI_API_KEY`.
 
-- Adiciona o rastreamento
-```
-dvc add data/second_part.csv
-```
-
-- Define o armazenamento --default (-d) para os dados
-```
-dvc remote add -d storing_data gdrive://1LiXbvMkEhfMvHgGBfBcybAO1XoBMycwQ
-```
-
-- Salva os dados no google drive
-```
-dvc pull
-```
-
+- The XGBoost model interaction environment is available at this [link](https://huggingface.co/spaces/AugustoOliveira099/xgboost). Environment variable to be defined: `WANDB_API_KEY`.
