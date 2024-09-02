@@ -47,13 +47,13 @@ Com isso, é possível interagir com o código presente no container e todas as 
 
 
 ## Download dos conjuntos de dados
-Para versionar os arquivos CSV com os dados necessários para o desenvolvimento dos modelos, foi utilizado o [DVC](https://dvc.org/) em conjunto com uma conta do Google Drive. Para fazer o download dos dados necessários para treinar os modelos, basta executar o comando a seguir:
+Para versionar os arquivos CSV com os dados necessários para o desenvolvimento dos modelos, foi utilizado o [DVC](https://dvc.org/) em conjunto com uma conta do Google Drive. 
+
+Todavia, com base em testes, o Google está bloqueando o DVC para contas que não sejam donas da pasta que contém os metadados dos arquivos. Sendo assim, foram colocados os arquivos de fato em uma pasta do Google Drive. Para baixar os arquivos no projeto basta executar o comando a seguir:
 
 ```
-dvc pull
+gdown --folder https://drive.google.com/drive/folders/15a9iCeUTLCpUcj1a-HLFmVTQP1cx0uf- -O data
 ```
-
-Será solicitado login com sua conta do Google para ter acesso aos arquivos presentes no Google Drive. Após isso, o download é iniciado de maneira automática.
 
 
 ## Executando o código
@@ -77,6 +77,7 @@ Para treinar o modelo K-Means com redução de dimensionalidade:
 ```
 python3 kmeans_pca_train
 ```
+
 
 
 
